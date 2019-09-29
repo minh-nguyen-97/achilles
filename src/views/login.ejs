@@ -6,7 +6,7 @@
   </head>
   <body>
     <%- include('./partials/navbar.ejs') %>
-    <div style="text-align: center; width: 20%; margin-left: 40%">
+    <div style="text-align: center; width: 26%; margin-left: 37%">
       <div>
         <img src="/assets/images/logo.png" width="90" height="90">
       </div>
@@ -16,6 +16,7 @@
       <div style="margin-top: 10px; margin-bottom: 50px; font-size: 20px; font-family: calibre,sans-serif;">
         Welcome back
       </div>
+      <%- include('./partials/auth-flash.ejs') %>
       <form method="POST">
         <div class="form-group">
           <input type="email" class="form-control" placeholder="Email">

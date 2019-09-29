@@ -7,25 +7,47 @@
   <body>
     <%- include('./partials/navbar.ejs') %>
 
-    <div style="text-align: center; width: 20%; margin-left: 40%">
+    <div style="text-align: center; width: 26%; margin-left: 37%">
       <div>
         <img src="/assets/images/logo.png" width="90" height="90">
       </div>
       <div style="font-size: 25px; color: #55CDD0">
         ACHILLES
       </div>
-      <div style="margin-top: 10px; margin-bottom: 30px; font-size: 20px; font-family: calibre,sans-serif;">
+      <div style="margin-top: 10px; margin-bottom: 50px; font-size: 20px; font-family: calibre,sans-serif;">
         Let's get started
       </div>
-      <form method="POST">
+      <%- include('./partials/warnings.ejs') %>
+      <form method="POST" action="/user/signup">
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="Name" required>
+          <input 
+            type="text" 
+            class="form-control" 
+            name="username" 
+            value="<%= typeof username != 'undefined' ? username : '' %>"
+            placeholder="Name" 
+            required
+          >
         </div>
         <div class="form-group">
-          <input type="email" class="form-control" placeholder="Email" required>
+          <input 
+            type="email" 
+            class="form-control" 
+            name="email"
+            value="<%= typeof email != 'undefined' ? email : '' %>"
+            placeholder="Email" 
+            required
+          >
         </div>
         <div class="form-group">
-          <input type="password" class="form-control" placeholder="Password" required>
+          <input 
+            type="password" 
+            class="form-control" 
+            name="password" 
+            value="<%= typeof password != 'undefined' ? password : '' %>"
+            placeholder="Password" 
+            required
+          >
         </div>
         <button type="submit" class="btn btn-primary" style="margin-top: 20px; width: 50%; height: 1.1cm">
           SIGN UP
