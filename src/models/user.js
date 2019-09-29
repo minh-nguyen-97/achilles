@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -14,6 +15,11 @@ const userSchema = new mongoose.Schema({
     required: true
   },
 });
+
+userSchema.methods.verifyPassword = async function(plainPass) {
+  const isMatch = await bcrypt.compare(plainPass, this.password);
+  return isMatch;
+}
 
 const User = mongoose.model('User', userSchema);
 

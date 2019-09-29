@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dashboard</title>
+    <%- include('./partials/header.ejs') %>
+  </head>
+  <body>
+    <%- include('./partials/navbar.ejs') %>
+    <div>
+      Welcome to Achilles Dashboard, <%= username %>
+      <form action="/user/logout" method="GET">
+        <button> Logout</button>
+      </form>
+    </div>
+  </body>
+</html>
