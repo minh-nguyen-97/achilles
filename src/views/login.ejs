@@ -19,10 +19,22 @@
       <%- include('./partials/auth-flash.ejs') %>
       <form method="POST" action="/user/login">
         <div class="form-group">
-          <input type="email" class="form-control" placeholder="Email">
+          <input 
+            type="email" 
+            class="form-control" 
+            placeholder="Email"
+            name="email"
+            required
+          >
         </div>
         <div class="form-group">
-          <input type="password" class="form-control" placeholder="Password">
+          <input 
+            type="password" 
+            class="form-control" 
+            placeholder="Password"
+            name="password"
+            required
+          >
         </div>
         <button type="submit" class="btn btn-primary" style="margin-top: 20px; width: 50%; height: 1.1cm">
           LOG IN

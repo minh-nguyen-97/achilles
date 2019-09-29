@@ -1,5 +1,6 @@
 const express = require('express')
 const User = require('../../models/user')
+const passport = require('passport')
 const bcrypt = require('bcrypt')
 const saltRounds = 10;
 const router = express.Router();
@@ -44,11 +45,24 @@ router.post('/signup', async (req, res) => {
           req.flash('success_flash', 'You are now registered and can log in')
           res.redirect('./login')
         })
+        .catch(err => console.log(err))
       })
     })
-    .catch(err => console.log(err))
 
   }
+})
+
+router.post('/login', passport.authenticate('local', {
+    successRedirect: '/dashboard',
+    failureRedirect: '/user/login',
+    failureFlash: true
+  })
+)
+
+router.get('/logout', (req, res) => {
+  req.logout();
+  req.flash('success_flash', 'You are logged out')
+  res.redirect('./login');
 })
 
 module.exports = router;
