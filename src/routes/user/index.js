@@ -1,5 +1,7 @@
 const express = require('express')
 const User = require('../../models/user')
+const bcrypt = require('bcrypt')
+const saltRounds = 10;
 const router = express.Router();
 
 router.get('/login', (req, res) => {
@@ -30,14 +32,19 @@ router.post('/signup', async (req, res) => {
       password
     })
   } else {
-    const newUser = new User({
-      username,
-      email,
-      password
-    });
-    newUser.save().then( (user) => {
-      req.flash('success_flash', 'You are now registered and can log in')
-      res.redirect('./login')
+
+    bcrypt.genSalt(saltRounds, (err, salt) => {
+      bcrypt.hash(password, salt, (err, hashPass) => {
+        const newUser = new User({
+          username,
+          email,
+          password: hashPass
+        });
+        newUser.save().then( (user) => {
+          req.flash('success_flash', 'You are now registered and can log in')
+          res.redirect('./login')
+        })
+      })
     })
     .catch(err => console.log(err))
 
