@@ -6,5 +6,27 @@
   </head>
   <body>
     <%- include('./partials/navbar.ejs') %>
+    <div style="text-align: center; width: 20%; margin-left: 40%">
+      <div>
+        <img src="/assets/images/logo.png" width="90" height="90">
+      </div>
+      <div style="font-size: 25px; color: #55CDD0">
+        ACHILLES
+      </div>
+      <div style="margin-top: 10px; margin-bottom: 50px; font-size: 20px; font-family: calibre,sans-serif;">
+        Welcome back
+      </div>
+      <form method="POST">
+        <div class="form-group">
+          <input type="email" class="form-control" placeholder="Email">
+        </div>
+        <div class="form-group">
+          <input type="password" class="form-control" placeholder="Password">
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 20px; width: 50%; height: 1.1cm">
+          LOG IN
+        </button>
+      </form>
+    </div>
   </body>
 </html>
