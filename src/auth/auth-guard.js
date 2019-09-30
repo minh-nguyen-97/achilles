@@ -4,7 +4,7 @@ module.exports = {
       return next();
     }
 
-    req.flash('error', 'Please log in to view resources')
+    req.flash('error_flash', 'Please log in to view resources')
     res.redirect('/user/login')
   },
   isNotAuthenticated: (req, res, next) => {

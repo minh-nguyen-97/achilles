@@ -56,7 +56,7 @@ app.use(flash())
 
 app.use((req, res, next) => {
   res.locals.success_flash = req.flash('success_flash')
-  res.locals.error = req.flash('error')
+  res.locals.error_flash = req.flash('error_flash')
   next();
 })
 

@@ -4,12 +4,13 @@ const passport = require('passport')
 const bcrypt = require('bcrypt')
 const saltRounds = 10;
 const router = express.Router();
+const { isNotAuthenticated, isAuthenticated } = require('../../auth/auth-guard')
 
-router.get('/login', (req, res) => {
+router.get('/login', isNotAuthenticated,  (req, res) => {
   res.render('login')
 })
 
-router.get('/signup', (req, res) => {
+router.get('/signup', isNotAuthenticated, (req, res) => {
   res.render('signup')
 })
 
@@ -54,12 +55,13 @@ router.post('/signup', async (req, res) => {
 
 router.post('/login', passport.authenticate('local', {
     successRedirect: '/dashboard',
+    successFlash: true,
     failureRedirect: '/user/login',
     failureFlash: true
   })
 )
 
-router.get('/logout', (req, res) => {
+router.get('/logout', isAuthenticated, (req, res) => {
   req.logout();
   req.flash('success_flash', 'You are logged out')
   res.redirect('./login');
