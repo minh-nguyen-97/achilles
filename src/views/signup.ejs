@@ -3,6 +3,7 @@
   <head>
     <title>Signup - Achilles</title>
     <%- include('./partials/header.ejs') %>
+    <script src="/assets/js/signup.js"></script>
   </head>
   <body>
     <%- include('./partials/navbar.ejs') %>
@@ -40,14 +41,21 @@
           >
         </div>
         <div class="form-group">
-          <input 
-            type="password" 
-            class="form-control" 
-            name="password" 
-            value="<%= typeof password != 'undefined' ? password : '' %>"
-            placeholder="Password" 
-            required
-          >
+          <div class="input-group" id="show_hide_password">
+            <input 
+              type="password" 
+              class="form-control" 
+              name="password" 
+              value="<%= typeof password != 'undefined' ? password : '' %>"
+              placeholder="Password" 
+              required
+            />
+            <div class="input-group-append">
+              <span class="input-group-text" style="background-color: white; border-left: none; cursor: pointer;">
+                <i class="fa fa-eye-slash"></i>
+              </span>
+            </div>
+          </div>
         </div>
         <button type="submit" class="btn btn-primary" style="margin-top: 20px; width: 50%; height: 1.1cm">
           SIGN UP
