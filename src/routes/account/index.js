@@ -21,13 +21,26 @@ const upload = multer({
       cb(null, {fieldName: file.fieldname});
     },
     key: function (req, file, cb) {
-      cb(null, `avatars/${req.user.username}.png`)
+      cb(null, `avatars/${req.user.username}_${Date.now().toString()}.png`)
     }
   })
 })
 
 route.post('/profile/upload', upload.single('avatar'), async function(req, res) {
   // const user = await User.findOne({username: req.user.username})
+
+  const oldAvaUrl = req.user.avatarURL;
+  const oldAvaKey = oldAvaUrl.split('/').slice(3).join('/');
+  // console.log(oldAvaKey);
+  const params = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: oldAvaKey
+  }
+  s3.deleteObject(params, function(err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else console.log(data);           // successful response
+  });
+
   req.user.avatarURL = req.file.location;
   await req.user.save();
 
