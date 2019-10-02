@@ -8,7 +8,8 @@ route.get('/', isNotAuthenticated, (req, res) => {
 
 route.get('/dashboard', isAuthenticated, (req, res) => {
   res.render('loggedIn/dashboard', {
-    username: req.user.username
+    username: req.user.username,
+    avatarURL: req.user.avatarURL
   })
 })
 

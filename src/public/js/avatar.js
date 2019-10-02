@@ -31,6 +31,8 @@ $(document).ready(function() {
         }
         
         reader.readAsDataURL(input.files[0]);
+
+        $('#avatarNavTab').attr('src', res.data.avatarURL)
       })
       .catch(function (error) {
         console.log(error);
