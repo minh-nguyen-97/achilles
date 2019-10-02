@@ -6,12 +6,14 @@ const favicon = require('serve-favicon')
 const mongoose = require('mongoose')
 const flash = require('connect-flash')
 const passport = require('passport')
+const { isAuthenticated } = require('./auth/auth-guard')
 const express = require('express')
 const app = express();
 const port = process.env.PORT || 3000;
 
 const userRouter = require('./routes/user')
 const indexRouter = require('./routes/index')
+const accountRouter = require('./routes/account')
 
 // connect to database
 mongoose.connect(
@@ -44,6 +46,9 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000,
+  }
 }))
 
 // Passport
@@ -64,6 +69,8 @@ app.use((req, res, next) => {
 app.use('/', indexRouter);
 
 app.use('/user', userRouter)
+
+app.use('/account', isAuthenticated, accountRouter)
 
 app.listen(port, () => {
   console.log(`Server running on ${port}`)

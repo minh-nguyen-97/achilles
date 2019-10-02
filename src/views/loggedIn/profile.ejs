@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Profile</title>
+    <%- include('./partials/header.ejs') %>
+    <link rel="stylesheet/less" type="text/css" href="/assets/css/profile.less" >
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js" ></script> 
+    <script src="/assets/js/avatar.js"></script>
+  </head>
+  <body>
+    <%- include('./partials/navbar.ejs') %>
+    <div style="text-align: center; margin-top: 50px">
+      <div class="avatar-upload">
+        <div class="avatar-edit">
+          <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" />
+          <label for="imageUpload"></label>
+        </div>
+        <div class="avatar-preview">
+            <div id="imagePreview" style="background-image: url('<%= avatarURL %>');">
+            </div>
+        </div>
+      </div>
+      <div style="font-style: italic;">
+        @<%= username %>
+      </div>
+      <div style="margin-top: 20px; font-size: 20px">
+        <%= email %>
+      </div>
+    </div>
+
+  </body>
+  <script>
+  </script>
+</html>

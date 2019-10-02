@@ -7,3 +7,18 @@
 .brandColor {
   color:#55CDD0;
 }
+
+.navTab {
+  height: 100%;
+  padding-top: 6px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-right: 16px;
+  border-radius: 5px;
+}
+
+.navTab:hover {
+  cursor: pointer;
+  color: #55CDD0;
+  background-color: rgb(252, 248, 248);
+}
