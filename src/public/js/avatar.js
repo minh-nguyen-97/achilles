@@ -8,11 +8,37 @@ $(document).ready(function() {
           $('#imagePreview').fadeIn(650);
         }
         
-        console.log(input.files[0])
         reader.readAsDataURL(input.files[0]);
     }
   }
+
+  function uploadAvatar(input) {
+    if (input.files && input.files[0]) {
+
+      const formData = new FormData();
+      formData.append('avatar', input.files[0]);
+      axios.post('/account/profile/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+      })
+      .then(function (res) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+          $('#imagePreview').hide();
+          $('#imagePreview').fadeIn();
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+        
+    }
+  }
   $("#imageUpload").change(function() {
-    readURL(this);
+    uploadAvatar(this)
   });
 })

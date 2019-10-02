@@ -3,7 +3,8 @@ const bcrypt = require('bcrypt')
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   email: {
     type: String,
@@ -14,6 +15,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  avatarURL: {
+    type: String,
+    required: true
+  }
 });
 
 userSchema.methods.verifyPassword = async function(plainPass) {

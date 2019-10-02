@@ -21,9 +21,14 @@ router.post('/signup', async (req, res) => {
   if (password.length < 6) 
     warnings.push('Password must have at least 6 characters')
   
-  const existingUser = await User.findOne({email});
-  if (existingUser) {
+  const existingEmail = await User.findOne({email});
+  if (existingEmail) {
     warnings.push('Email has already been registered')
+  }
+
+  const existingUsername = await User.findOne({username});
+  if (existingUsername) {
+    warnings.push('Username has already been registered')
   }
 
   if (warnings.length > 0) {
@@ -40,7 +45,8 @@ router.post('/signup', async (req, res) => {
         const newUser = new User({
           username,
           email,
-          password: hashPass
+          password: hashPass,
+          avatarURL: 'https://bit.ly/2ocm1Sa'
         });
         newUser.save().then( (user) => {
           req.flash('success_flash', 'You are now registered and can log in')
