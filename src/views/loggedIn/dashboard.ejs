@@ -3,12 +3,71 @@
   <head>
     <title>Dashboard</title>
     <%- include('./partials/header.ejs') %>
+    <link rel="stylesheet" href="/assets/css/dashboard.css" />
   </head>
   <body>
     <%- include('./partials/navbar.ejs') %>
     <div class="container">
       <%- include('./partials/success-flash.ejs') %>
     </div>
+
+    <div class="container-compatible">
+      <div class="card">
+        <h6 class="card-header">
+          People you may know
+        </h6>
+        <div class="card-body" style="height: 400px">
+          <div id="SuggestCarousel" class="carousel slide" data-ride="carousel" style="margin-top: 30px">
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <div style="width: 80%; margin-left: 10%">
+                  <div class="card d-inline-block" style="width: 27%; margin-left: 5%">
+                    <img class="card-img-top" src="<%= avatarURL %>">
+                    <div class="card-body">
+                        <div style="font-style: italic;">
+                          @<strong class="brandColor"><%= username %></strong>
+                        </div>
+                    </div>
+                  </div>
+
+                  <div class="card d-inline-block" style="width: 27%; margin-left: 5%">
+                      <img class="card-img-top" src="<%= avatarURL %>">
+                      <div class="card-body">
+                          <div style="font-style: italic;">
+                            @<strong class="brandColor"><%= username %></strong>aa
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="card d-inline-block" style="width: 27%; margin-left: 5%">
+                        <img class="card-img-top" src="<%= avatarURL %>">
+                        <div class="card-body">
+                            <div style="font-style: italic;">
+                              @<strong class="brandColor"><%= username %></strong>
+                            </div>
+                        </div>
+                      </div>
+
+                </div>
+              </div>
+
+            </div>
+            <a class="carousel-control-prev" href="#SuggestCarousel" role="button" data-slide="prev">
+                <i class="fas fa-chevron-circle-left brandColor"></i>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#SuggestCarousel" role="button" data-slide="next">
+                <i class="fas fa-chevron-circle-right brandColor"></i>
+              <span class="sr-only">Next</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    
+
   </body>
   <script>
   </script>
