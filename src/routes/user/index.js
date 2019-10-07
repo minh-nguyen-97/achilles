@@ -48,7 +48,7 @@ router.post('/signup', async (req, res) => {
           password: hashPass,
           avatarURL: 'https://bit.ly/2ocm1Sa'
         });
-        newUser.save().then( (user) => {
+        newUser.save().then( async (user) => {
           req.flash('success_flash', 'You are now registered and can log in')
           res.redirect('./login')
         })

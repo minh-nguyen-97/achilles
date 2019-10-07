@@ -1,0 +1,30 @@
+<% var count = 0 %>
+<% while (count < suggestions.length) { %>
+  <div class="carousel-item <% if (count == 0) { %>
+    <%= 'active' %>
+  <% } %>">
+    <% var numOfItem = 0 %>
+    <div>
+      <% while (count < suggestions.length) { %>
+        
+          <div class="card d-inline-block" style="width: 26%; margin-left: 5%; top: 0">
+            <img class="card-img-top" src="<%= suggestions[count].avatarURL %>" height="150px">
+            <div class="card-body">
+                <div style="font-style: italic; font-size: 14px">
+                  <strong class="brandColor"><%= suggestions[count].username %></strong>
+                </div>
+                <button class="btn btn-outline-primary"  style="font-size: 13px; margin-top: 5px"> 
+                    <i class="fas fa-user-plus"></i> 
+                    <span>Add Friend</span>
+                </button>
+            </div>
+          </div>
+        <% count++ %>
+        <% numOfItem++ %>
+        <% if (numOfItem == 3) break; %>
+      <% } %>
+    </div>
+  </div>
+<% } %>
+
+
