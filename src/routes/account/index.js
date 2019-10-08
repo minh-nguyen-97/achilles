@@ -3,6 +3,7 @@ const aws = require('aws-sdk')
 const multer = require('multer')
 const multerS3 = require('multer-s3')
 const User = require('../../models/user')
+const Request = require('../../models/friend-request')
 const express = require('express')
 const route = express.Router();
 
@@ -53,6 +54,32 @@ route.get('/profile', (req, res) => {
     email: req.user.email,
     avatarURL: req.user.avatarURL
   })
+})
+
+route.post('/send-friend-request', async (req, res) => {
+  const receiver = req.body.receiver;
+  const request = new Request({
+    sender: req.user.username,
+    receiver,
+    status: 'unseen',
+  })
+  
+  await request.save();
+
+  res.send('Successfully request')
+})
+
+route.delete('/delete-friend-request/:receiver', async (req, res) => {
+  const receiver = req.params.receiver;
+  // console.log(req.user.username, receiver)
+  const request = await Request.findOne({
+    sender: req.user.username,
+    receiver
+  });
+
+  await request.remove();
+
+  res.send('Successfully delete request')
 })
 
 

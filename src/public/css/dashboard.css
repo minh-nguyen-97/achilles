@@ -2,3 +2,9 @@
   margin-left: 16%;
   width: 69%;
 }
+
+.requestStatusButton {
+  font-size: 13px; 
+  margin-top: 5px; 
+  height: 1cm;
+}

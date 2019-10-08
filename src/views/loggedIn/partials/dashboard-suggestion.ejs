@@ -7,15 +7,19 @@
     <div>
       <% while (count < suggestions.length) { %>
         
-          <div class="card d-inline-block" style="width: 26%; margin-left: 5%; top: 0">
+          <div class="card d-inline-block" style="width: 26%; margin-left: 5%;">
             <img class="card-img-top" src="<%= suggestions[count].avatarURL %>" height="150px">
-            <div class="card-body">
+            <div class="card-body" style="padding-left: 10px;">
                 <div style="font-style: italic; font-size: 14px">
                   <strong class="brandColor"><%= suggestions[count].username %></strong>
                 </div>
-                <button class="btn btn-outline-primary"  style="font-size: 13px; margin-top: 5px"> 
-                    <i class="fas fa-user-plus"></i> 
-                    <span>Add Friend</span>
+                <button class="btn btn-outline-primary addFriendButton requestStatusButton"  style=" display: block"> 
+                  <i class="fas fa-user-plus"></i> 
+                  <span>Add Friend</span>
+                </button>
+                <button class="btn btn-outline-primary requestSentButton requestStatusButton" style=" display: none;">
+                  <i class="fas fa-user-clock"></i> 
+                  <span>Request Sent</span>
                 </button>
             </div>
           </div>
