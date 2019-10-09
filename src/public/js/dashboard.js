@@ -7,6 +7,7 @@ $(document).ready(function() {
     }).then(() => {
       $(this).css('display', 'none');
       $(this).next().css('display', 'block');
+      socket.emit('send friend request', receiver)
     });
   })
 

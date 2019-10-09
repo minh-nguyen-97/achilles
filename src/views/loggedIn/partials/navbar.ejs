@@ -23,12 +23,27 @@
               <a id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-user-friends" style="font-size: 20px; padding-top: 6px">
                 </i>
-                <span id="friendsNotiBadge" class="notiBadge">1</span>
+                <span id="friendsNotiBadge" class="notiBadge">0</span>
               </a>
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
+              <div class="dropdown-menu dropdown-menu-right" style="width: 500px" aria-labelledby="dropdownMenu1">
+                <div class="container">
+                  <strong style="font-size: 14px">Friend Requests</strong>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="container" id="friendsRequestNotiMenu">
+                  <div class="row align-items-center">
+                    <div class="col text-left">
+                      <img src="<%= avatarURL %>" style="border-radius: 50%" width="40" height="40"> 
+                      <span style="font-size: 14px">
+                        <strong class="brandColor"><%= username %></strong>
+                      </span>
+                    </div>
+                    <div class="col text-right" style=" vertical-align: middle">
+                      <button class="btn btn-success" style="font-size: 12px; height: 0.75cm;">Accept</button>
+                      <button class="btn btn-outline-danger" style="font-size: 12px; height: 0.75cm;">Ignore</button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </li>

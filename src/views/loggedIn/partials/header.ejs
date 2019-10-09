@@ -36,4 +36,25 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
   var socket = io();
+  socket.on('received friend request', function(sender, senderAvatarURL) {
+    // alert(`${sender} sent you a friend request`)
+    const numOfNoti = Number($('#friendsNotiBadge').text())
+    $('#friendsNotiBadge').text(numOfNoti + 1)
+    $('#friendsRequestNotiMenu').prepend(
+      `<div class="row align-items-center">
+        <div class="col text-left">
+          <img src="${senderAvatarURL}" style="border-radius: 50%" width="40" height="40"> 
+          <span style="font-size: 14px">
+            <strong class="brandColor">${sender}</strong>
+          </span>
+        </div>
+        <div class="col text-right" style=" vertical-align: middle">
+          <button class="btn btn-success" style="font-size: 12px; height: 0.75cm;">Accept</button>
+          <button class="btn btn-outline-danger" style="font-size: 12px; height: 0.75cm;">Ignore</button>
+        </div>
+      </div>
+      <div class="dropdown-divider"></div>
+      `
+    )
+  })
 </script>

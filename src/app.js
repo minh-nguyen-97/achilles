@@ -88,9 +88,20 @@ io.use(passportSocketIo.authorize({
 }))
 
 io.on('connection', (socket) => {
-  
-  console.log('user ' + socket.request.user.username + ' connected');
+  const username = socket.request.user.username;
+  console.log('user ' + username + ' connected');
 
+  socket.join(`${username}`)
+
+  socket.on('disconnect', function() {
+    socket.leave(`${username}`)
+  })
+
+  socket.on('send friend request', (receiver) => {
+    io.to(receiver).emit('received friend request', username, socket.request.user.avatarURL);
+  })
+
+  // console.log(io.sockets.adapter.rooms)
   
 })
 
