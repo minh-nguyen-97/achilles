@@ -25,6 +25,7 @@ $(document).ready(function() {
     axios.delete(`/account/delete-friend-request/${receiver}`).then(() => {
       $(this).css('display', 'none');
       $(this).prev().css('display', 'block');
+      socket.emit('delete friend request', receiver)
     });
   })
 })

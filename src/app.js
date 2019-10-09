@@ -101,6 +101,10 @@ io.on('connection', (socket) => {
     io.to(receiver).emit('received friend request', username, socket.request.user.avatarURL);
   })
 
+  socket.on('delete friend request', (receiver) => {
+    io.to(receiver).emit('received deletion friend request', username);
+  })
+
   // console.log(io.sockets.adapter.rooms)
   
 })
