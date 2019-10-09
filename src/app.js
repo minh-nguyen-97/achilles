@@ -1,7 +1,9 @@
 require('dotenv').config();
 const path = require('path')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const session = require('express-session')
+const MongoStore = require('connect-mongo')(session);
 const favicon = require('serve-favicon')
 const mongoose = require('mongoose')
 const flash = require('connect-flash')
@@ -9,6 +11,9 @@ const passport = require('passport')
 const { isAuthenticated } = require('./auth/auth-guard')
 const express = require('express')
 const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+const passportSocketIo = require("passport.socketio");
 const port = process.env.PORT || 3000;
 
 const userRouter = require('./routes/user')
@@ -42,13 +47,18 @@ app.use(bodyParser.urlencoded({
 }));
 
 // session
+const sessionStore = new MongoStore({
+  mongooseConnection: mongoose.connection
+})
+
 app.use(session({
   secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: true,
+  resave: true,
+  saveUninitialized: false,
   cookie: {
-    expires: new Date(253402300000000)
-  }
+    maxAge: 24 * 60 * 60 * 1000
+  },
+  store: sessionStore
 }))
 
 // Passport
@@ -72,6 +82,18 @@ app.use('/user', userRouter)
 
 app.use('/account', isAuthenticated, accountRouter)
 
-app.listen(port, () => {
+io.use(passportSocketIo.authorize({
+  secret: process.env.SESSION_SECRET,
+  store: sessionStore
+}))
+
+io.on('connection', (socket) => {
+  
+  console.log('user ' + socket.request.user.username + ' connected');
+
+  
+})
+
+server.listen(port, () => {
   console.log(`Server running on ${port}`)
 })

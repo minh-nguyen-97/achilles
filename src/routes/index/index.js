@@ -32,7 +32,9 @@ route.get('/dashboard', isAuthenticated, async (req, res) => {
       avatarURL: suggestion.avatarURL
     }
   })
-  console.log(suggestions)
+  // console.log(suggestions)
+
+  // console.log(req.session);
   
   res.render('loggedIn/dashboard', {
     username: req.user.username,
