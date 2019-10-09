@@ -69,6 +69,19 @@ route.post('/send-friend-request', async (req, res) => {
   res.send('Successfully request')
 })
 
+route.delete('/ignore-friend-request/:sender', async (req, res) => {
+  const sender = req.params.sender;
+
+  const request = await Request.findOne({
+    sender,
+    receiver: req.user.username
+  });
+
+  await request.remove();
+
+  res.send('Successfully ignore request')
+})
+
 route.delete('/delete-friend-request/:receiver', async (req, res) => {
   const receiver = req.params.receiver;
   // console.log(req.user.username, receiver)
