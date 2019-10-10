@@ -1,16 +1,17 @@
 $(document).ready(function() {
   $('.addFriendButton').click(function() {
-    const receiver = $(this).prev().text().trim();
+    const receiver = $(this).attr('id').replace('addFriendButtonFor', '');
 
     axios.post(`/account/send-friend-request`, {
       receiver
     }).then(() => {
       $(this).css('display', 'none');
-      $(this).next().css('display', 'block');
+      $(`#requestSentButtonFor${receiver}`).css('display', 'block');
       socket.emit('send friend request', receiver)
     });
   })
 
+  //
   $('.requestSentButton').mouseenter(function() {
     $(this).removeClass('btn-outline-primary').addClass('btn-outline-danger');
     $(this).find('span').text('Cancel Request')
@@ -20,16 +21,17 @@ $(document).ready(function() {
   })
 
   $('.requestSentButton').click(function() {
-    const receiver = $(this).prev().prev().text().trim();
+    const receiver = $(this).attr('id').replace('requestSentButtonFor', '');
 
     axios.delete(`/account/delete-friend-request/${receiver}`).then(() => {
       $(this).css('display', 'none');
-      $(this).prev().css('display', 'block');
+      $(`#addFriendButtonFor${receiver}`).css('display', 'block');
       socket.emit('delete friend request', receiver)
     });
   })
 
-  $('.friendButton').mouseenter(function() {
+  //
+  $('.friendshipButton').mouseenter(function() {
     $(this).removeClass('btn-outline-primary').addClass('btn-outline-danger');
     $(this).html(
       `
@@ -45,5 +47,15 @@ $(document).ready(function() {
       <span>Friend</span>
       `
     )
+  });
+
+  $('.friendshipButton').click(function() {
+    const receiver = $(this).attr('id').replace('friendsWith', '');
+
+    axios.delete(`/account/unfriend/${receiver}`).then(() => {
+      $(this).css('display', 'none');
+      $(`#addFriendButtonFor${receiver}`).css('display', 'block');
+      socket.emit('unfriend', receiver);
+    })
   })
 })

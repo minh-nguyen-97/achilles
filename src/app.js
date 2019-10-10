@@ -105,12 +105,16 @@ io.on('connection', (socket) => {
     io.to(receiver).emit('received deletion friend request', username);
   })
 
-  socket.on('ignore friend request', (sender) => {
-    io.to(sender).emit('received ignore friend request', username);
+  socket.on('ignore friend request', (receiver) => {
+    io.to(receiver).emit('received ignore friend request', username);
   })
 
-  socket.on('accept friend request', (sender) => {
-    io.to(sender).emit('received accept friend request', username);
+  socket.on('accept friend request', (receiver) => {
+    io.to(receiver).emit('received accept friend request', username, socket.request.user.avatarURL);
+  })
+
+  socket.on('unfriend', (receiver) => {
+    io.to(receiver).emit('received unfriend', username);
   })
 
   // console.log(io.sockets.adapter.rooms)

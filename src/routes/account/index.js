@@ -70,6 +70,33 @@ route.post('/send-friend-request', async (req, res) => {
   res.send('Successfully request')
 })
 
+
+route.delete('/delete-friend-request/:receiver', async (req, res) => {
+  const receiver = req.params.receiver;
+  // console.log(req.user.username, receiver)
+  const request = await Request.findOne({
+    sender: req.user.username,
+    receiver
+  });
+
+  await request.remove();
+
+  res.send('Successfully delete request')
+})
+
+route.delete('/ignore-friend-request/:sender', async (req, res) => {
+  const sender = req.params.sender;
+
+  const request = await Request.findOne({
+    sender,
+    receiver: req.user.username
+  });
+
+  await request.remove();
+
+  res.send('Successfully ignore request')
+})
+
 route.post('/accept-friend-request', async (req, res) => {
   const sender = req.body.sender;
   const receiver = req.user.username;
@@ -99,30 +126,25 @@ route.post('/accept-friend-request', async (req, res) => {
   res.send('Successfully accept request')
 })
 
-route.delete('/ignore-friend-request/:sender', async (req, res) => {
-  const sender = req.params.sender;
+route.delete('/unfriend/:receiver', async (req, res) => {
+  receiver = req.params.receiver;
+  sender = req.user.username;
 
-  const request = await Request.findOne({
-    sender,
-    receiver: req.user.username
-  });
+  const friend1 = await Friend.findOne({
+    username: sender,
+    friend: receiver
+  })
 
-  await request.remove();
+  await friend1.remove();
 
-  res.send('Successfully ignore request')
-})
+  const friend2 = await Friend.findOne({
+    username: receiver,
+    friend: sender
+  })
 
-route.delete('/delete-friend-request/:receiver', async (req, res) => {
-  const receiver = req.params.receiver;
-  // console.log(req.user.username, receiver)
-  const request = await Request.findOne({
-    sender: req.user.username,
-    receiver
-  });
+  await friend2.remove();
 
-  await request.remove();
-
-  res.send('Successfully delete request')
+  res.send('Unfriend successfully')
 })
 
 

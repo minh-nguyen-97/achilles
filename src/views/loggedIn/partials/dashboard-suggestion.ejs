@@ -22,10 +22,10 @@
                   <span>Request Sent</span>
                 </button>
                 <div id="receivedRequestFrom<%= suggestions[count].username %>" style="display:none; width: 120%; margin-top: 7px;">
-                  <button onclick="acceptRequestFrom('<%= suggestions[count].username %>')" class="btn btn-success acceptRequestButton requestStatusButton" style="width: 45%; margin-top: 0;">Accept</button>
+                  <button onclick="acceptRequestFrom('<%= suggestions[count].username %>')" class="btn btn-success requestStatusButton" style="width: 45%; margin-top: 0;">Accept</button>
                   <button onclick="ignoreRequestFrom('<%= suggestions[count].username %>')" class="btn btn-outline-danger requestStatusButton" style=" width: 45%; margin-top: 0;">Ignore</button>
                 </div>
-                <button id="friendsWith<%= suggestions[count].username %>" class="btn btn-outline-primary friendButton requestStatusButton" style="display: none;">
+                <button id="friendsWith<%= suggestions[count].username %>" class="btn btn-outline-primary friendshipButton requestStatusButton" style="display: none;">
                   <i class="fas fa-user-check"></i>
                   <span>Friend</span>
                 </button>
