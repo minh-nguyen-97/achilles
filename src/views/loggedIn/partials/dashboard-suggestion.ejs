@@ -21,6 +21,10 @@
                   <i class="fas fa-user-clock"></i> 
                   <span>Request Sent</span>
                 </button>
+                <div id="receivedRequestFrom<%= suggestions[count].username %>" style="display:none; width: 120%; margin-top: 7px;">
+                  <button class="btn btn-success acceptRequestButton requestStatusButton" style="width: 45%; margin-top: 0;">Accept</button>
+                  <button onclick="ignoreRequestFrom('<%= suggestions[count].username %>')" class="btn btn-outline-danger requestStatusButton" style=" width: 45%; margin-top: 0;">Ignore</button>
+                </div>
             </div>
           </div>
         <% count++ %>

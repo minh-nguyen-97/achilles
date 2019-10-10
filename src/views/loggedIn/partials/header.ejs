@@ -30,6 +30,12 @@
   var socket = io();
   socket.on('received deletion friend request', function(sender) {
     $(`#friendRequestFrom${sender}`).remove();
+    if ($(`#receivedRequestFrom${sender}`).length) {
+      $(`#receivedRequestFrom${sender}`).css('display', 'none')
+      $(`#receivedRequestFrom${sender}`).prev().css('display', 'none')
+      $(`#receivedRequestFrom${sender}`).prev().prev().css('display', 'block')
+    }
+    
   })
   socket.on('received friend request', function(sender, senderAvatarURL) {
     // alert(`${sender} sent you a friend request`)
@@ -74,8 +80,14 @@
               </span>
           </div>
       </div>
-        `
+      `
     )
+      
+    if ($(`#receivedRequestFrom${sender}`).length) {
+      $(`#receivedRequestFrom${sender}`).css('display', 'block')
+      $(`#receivedRequestFrom${sender}`).prev().css('display', 'none')
+      $(`#receivedRequestFrom${sender}`).prev().prev().css('display', 'none')
+    }
 
     $(`#${time}`).toast('show')
   })
@@ -93,6 +105,11 @@
   function ignoreRequestFrom(sender) {
     axios.delete(`/account/ignore-friend-request/${sender}`).then(() => {
       $(`#friendRequestFrom${sender}`).remove();
+      if ($(`#receivedRequestFrom${sender}`).length) {
+        $(`#receivedRequestFrom${sender}`).css('display', 'none')
+        $(`#receivedRequestFrom${sender}`).prev().css('display', 'none')
+        $(`#receivedRequestFrom${sender}`).prev().prev().css('display', 'block')
+      }
       socket.emit('ignore friend request', sender);
     });
   }
