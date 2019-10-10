@@ -24,18 +24,6 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <!-- Scripts -->
-<script type="text/javascript">
-
-  function ignoreRequestFrom(sender) {
-    $(`#friendRequestFrom${sender}`).remove();
-  }
-
-  $(document).ready(function() {
-    $('#friendsTab').on('click', function() {
-      $('#friendsNotiBadge').hide();
-    })
-  })
-</script>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
@@ -90,5 +78,31 @@
     )
 
     $(`#${time}`).toast('show')
+  })
+
+  socket.on('received ignore friend request', function(sender) {
+    if ($(`#requestSentButtonFor${sender}`).length) {
+      $(`#requestSentButtonFor${sender}`).css('display', 'none');
+      $(`#requestSentButtonFor${sender}`).prev().css('display', 'block');
+    }
+  })
+</script>
+
+<script type="text/javascript">
+
+  function ignoreRequestFrom(sender) {
+    axios.delete(`/account/ignore-friend-request/${sender}`).then(() => {
+      $(`#friendRequestFrom${sender}`).remove();
+      socket.emit('ignore friend request', sender);
+    });
+  }
+
+  $(document).ready(function() {
+    $('#friendsDropdownMenu').click(function(e){
+      e.stopPropagation();
+    })
+    $('#friendsTab').on('click', function() {
+      $('#friendsNotiBadge').hide();
+    })
   })
 </script>

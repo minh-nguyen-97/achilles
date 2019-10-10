@@ -13,11 +13,11 @@
                 <div style="font-style: italic; font-size: 14px">
                   <strong class="brandColor"><%= suggestions[count].username %></strong>
                 </div>
-                <button class="btn btn-outline-primary addFriendButton requestStatusButton"  style=" display: block"> 
+                <button id="addFriendButtonFor<%= suggestions[count].username %>" class="btn btn-outline-primary addFriendButton requestStatusButton"  style=" display: block"> 
                   <i class="fas fa-user-plus"></i> 
                   <span>Add Friend</span>
                 </button>
-                <button class="btn btn-outline-primary requestSentButton requestStatusButton" style=" display: none; width: 110%">
+                <button id="requestSentButtonFor<%= suggestions[count].username %>" class="btn btn-outline-primary requestSentButton requestStatusButton" style=" display: none; width: 110%">
                   <i class="fas fa-user-clock"></i> 
                   <span>Request Sent</span>
                 </button>

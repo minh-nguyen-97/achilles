@@ -105,6 +105,10 @@ io.on('connection', (socket) => {
     io.to(receiver).emit('received deletion friend request', username);
   })
 
+  socket.on('ignore friend request', (sender) => {
+    io.to(sender).emit('received ignore friend request', username);
+  })
+
   // console.log(io.sockets.adapter.rooms)
   
 })
