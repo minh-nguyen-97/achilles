@@ -28,4 +28,22 @@ $(document).ready(function() {
       socket.emit('delete friend request', receiver)
     });
   })
+
+  $('.friendButton').mouseenter(function() {
+    $(this).removeClass('btn-outline-primary').addClass('btn-outline-danger');
+    $(this).html(
+      `
+      <i class="fas fa-user-times"></i>
+      <span>Unfriend</span>
+      `
+    )
+  }).mouseleave(function() {
+    $(this).removeClass('btn-outline-danger').addClass('btn-outline-primary');
+    $(this).html(
+      `
+      <i class="fas fa-user-check"></i>
+      <span>Friend</span>
+      `
+    )
+  })
 })

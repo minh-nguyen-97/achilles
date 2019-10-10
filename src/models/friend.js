@@ -8,6 +8,10 @@ const friendSchema = new mongoose.Schema({
   friend:{
       type: Schema.Types.String,
       ref: 'User'
+  },
+  createdTime: {
+    type: Date,
+    default: Date.now
   }
 })
 

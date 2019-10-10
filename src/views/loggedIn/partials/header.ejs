@@ -32,8 +32,7 @@
     $(`#friendRequestFrom${sender}`).remove();
     if ($(`#receivedRequestFrom${sender}`).length) {
       $(`#receivedRequestFrom${sender}`).css('display', 'none')
-      $(`#receivedRequestFrom${sender}`).prev().css('display', 'none')
-      $(`#receivedRequestFrom${sender}`).prev().prev().css('display', 'block')
+      $(`#addFriendButtonFor${sender}`).css('display', 'block')
     }
     
   })
@@ -52,7 +51,7 @@
             </span>
           </div>
           <div class="col text-right" style=" vertical-align: middle">
-            <button id="acceptRequestFrom${sender}" class="btn btn-success acceptRequestButton" style="font-size: 12px; height: 0.75cm;">Accept</button>
+            <button onclick="acceptRequestFrom('${sender}')" class="btn btn-success acceptRequestButton" style="font-size: 12px; height: 0.75cm;">Accept</button>
             <button onclick="ignoreRequestFrom('${sender}')" class="btn btn-outline-danger" style="font-size: 12px; height: 0.75cm;">Ignore</button>
           </div>
         </div>
@@ -82,33 +81,51 @@
       </div>
       `
     )
-      
+    $(`#${time}`).toast('show')
+
     if ($(`#receivedRequestFrom${sender}`).length) {
       $(`#receivedRequestFrom${sender}`).css('display', 'block')
-      $(`#receivedRequestFrom${sender}`).prev().css('display', 'none')
-      $(`#receivedRequestFrom${sender}`).prev().prev().css('display', 'none')
+      $(`#addFriendButtonFor${sender}`).css('display', 'none')
     }
 
-    $(`#${time}`).toast('show')
   })
 
   socket.on('received ignore friend request', function(sender) {
     if ($(`#requestSentButtonFor${sender}`).length) {
       $(`#requestSentButtonFor${sender}`).css('display', 'none');
-      $(`#requestSentButtonFor${sender}`).prev().css('display', 'block');
+      $(`#addFriendButtonFor${sender}`).css('display', 'block');
+    }
+  })
+
+  socket.on('received accept friend request', function(sender) {
+    if ($(`#requestSentButtonFor${sender}`).length) {
+      $(`#requestSentButtonFor${sender}`).css('display', 'none');
+      $(`#friendsWith${sender}`).css('display', 'block');
     }
   })
 </script>
 
 <script type="text/javascript">
 
+  function acceptRequestFrom(sender) {
+    axios.post(`/account/accept-friend-request`, {
+      sender
+    }).then(() => {
+      $(`#friendRequestFrom${sender}`).remove();
+      if ($(`#friendsWith${sender}`).length) {
+        $(`#receivedRequestFrom${sender}`).css('display', 'none')
+        $(`#friendsWith${sender}`).css('display', 'block');
+      }
+      socket.emit('accept friend request', sender)
+    });
+  }
+
   function ignoreRequestFrom(sender) {
     axios.delete(`/account/ignore-friend-request/${sender}`).then(() => {
       $(`#friendRequestFrom${sender}`).remove();
       if ($(`#receivedRequestFrom${sender}`).length) {
         $(`#receivedRequestFrom${sender}`).css('display', 'none')
-        $(`#receivedRequestFrom${sender}`).prev().css('display', 'none')
-        $(`#receivedRequestFrom${sender}`).prev().prev().css('display', 'block')
+        $(`#addFriendButtonFor${sender}`).css('display', 'block')
       }
       socket.emit('ignore friend request', sender);
     });

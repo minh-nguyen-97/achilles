@@ -4,6 +4,7 @@ const multer = require('multer')
 const multerS3 = require('multer-s3')
 const User = require('../../models/user')
 const Request = require('../../models/friend-request')
+const Friend = require('../../models/friend')
 const express = require('express')
 const route = express.Router();
 
@@ -67,6 +68,35 @@ route.post('/send-friend-request', async (req, res) => {
   await request.save();
 
   res.send('Successfully request')
+})
+
+route.post('/accept-friend-request', async (req, res) => {
+  const sender = req.body.sender;
+  const receiver = req.user.username;
+
+  const request = await Request.findOne({
+    sender,
+    receiver
+  });
+
+  await request.remove();
+
+  // create two-way friendship
+  const friend1 = new Friend({
+    username: sender,
+    friend: receiver
+  })
+
+  await friend1.save();
+
+  const friend2 = new Friend({
+    username: receiver,
+    friend: sender
+  })
+
+  await friend2.save();
+
+  res.send('Successfully accept request')
 })
 
 route.delete('/ignore-friend-request/:sender', async (req, res) => {

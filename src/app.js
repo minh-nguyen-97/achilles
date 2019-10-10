@@ -109,6 +109,10 @@ io.on('connection', (socket) => {
     io.to(sender).emit('received ignore friend request', username);
   })
 
+  socket.on('accept friend request', (sender) => {
+    io.to(sender).emit('received accept friend request', username);
+  })
+
   // console.log(io.sockets.adapter.rooms)
   
 })
