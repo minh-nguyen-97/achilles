@@ -19,11 +19,11 @@
       <div class="collapse navbar-collapse" id="navbarNavDropdown" style="margin-top: -5px;">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <div id="friendsTab" class="navTab" style="position: relative">
+            <div id="friendsTab" class="navTab" style="position: relative" onclick="removeNotiForUnseenRequests()">
               <a id="friendsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-user-friends" style="font-size: 20px; padding-top: 6px">
                 </i>
-                <span id="friendsNotiBadge" class="notiBadge">0</span>
+                <span id="friendsNotiBadge" class="notiBadge" style="display: none"></span>
               </a>
               <div id="friendsDropdownMenu" class="dropdown-menu dropdown-menu-right" style="width: 500px" aria-labelledby="friendsDropdown">
                 <div class="container">

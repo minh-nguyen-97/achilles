@@ -40,9 +40,10 @@
     // alert(`${sender} sent you a friend request`)
     const numOfNoti = Number($('#friendsNotiBadge').text())
     $('#friendsNotiBadge').text(numOfNoti + 1)
+    $('#friendsNotiBadge').show();
     $('#friendsRequestNotiMenu').prepend(
       `
-      <div id="friendRequestFrom${sender}" class="container-fluid">
+      <div id="friendRequestFrom${sender}" class="container-fluid" style="background-color: whitesmoke; padding-top:9px">
         <div class="row align-items-center">
           <div class="col text-left">
             <img src="${senderAvatarURL}" style="border-radius: 50%" width="40" height="40"> 
@@ -55,7 +56,7 @@
             <button onclick="ignoreRequestFrom('${sender}')" class="btn btn-outline-danger" style="font-size: 12px; height: 0.75cm;">Ignore</button>
           </div>
         </div>
-        
+        <div class="dropdown-divider"></div>
       </div>
       `
     )
@@ -161,12 +162,54 @@
     });
   }
 
+  // function removeNotiForUnseenRequests() {
+  //     alert('CHANGE')
+  //     if ($(this).hasClass('show')) {
+  //       $('#friendsNotiBadge').hide();
+  //       $('#friendsNotiBadge').text(0)
+  //     }
+  //   }
+
   $(document).ready(function() {
+
+    axios.get('/account/number-unseen-friend-request').then((res) => {
+      const numOfUnseenRequests = res.data.numOfUnseenRequests;
+      // console.log(numOfUnseenRequests);
+      if (numOfUnseenRequests > 0) {
+        $('#friendsNotiBadge').text(numOfUnseenRequests);
+        $('#friendsNotiBadge').show();
+      }
+    })
+
+    axios.get('/account/unseen-friend-request').then((res) => {
+      const unseenRequests = res.data.unseenRequests;
+      console.log(unseenRequests);
+      unseenRequests.forEach((request) => {
+        $('#friendsRequestNotiMenu').append(
+            `
+            <div id="friendRequestFrom${request.sender}" class="container-fluid" style="background-color: whitesmoke; padding-top:9px">
+              <div class="row align-items-center">
+                <div class="col text-left">
+                  <img src="${request.senderAvatarURL}" style="border-radius: 50%" width="40" height="40"> 
+                  <span style="font-size: 14px">
+                    <strong class="brandColor">${request.sender}</strong>
+                  </span>
+                </div>
+                <div class="col text-right" style=" vertical-align: middle">
+                  <button onclick="acceptRequestFrom('${request.sender}')" class="btn btn-success" style="font-size: 12px; height: 0.75cm;">Accept</button>
+                  <button onclick="ignoreRequestFrom('${request.sender}')" class="btn btn-outline-danger" style="font-size: 12px; height: 0.75cm;">Ignore</button>
+                </div>
+              </div>
+              <div class="dropdown-divider"></div>
+            </div>
+            `
+          )
+      })
+    })
+
     $('#friendsDropdownMenu').click(function(e){
       e.stopPropagation();
     })
-    $('#friendsTab').on('click', function() {
-      $('#friendsNotiBadge').hide();
-    })
+    
   })
 </script>

@@ -147,5 +147,37 @@ route.delete('/unfriend/:receiver', async (req, res) => {
   res.send('Unfriend successfully')
 })
 
+// get number of unseen friend request
+route.get('/number-unseen-friend-request', async(req, res) => {
+  // console.log(req.user.username);
+  const numOfUnseenRequests = await Request.countDocuments({ 
+    receiver: req.user.username,
+    status: 'unseen'
+  })
+
+  res.send({numOfUnseenRequests});
+})
+
+route.get('/unseen-friend-request', async(req, res) => {
+  let unseenRequests = await Request.find({
+    receiver: req.user.username,
+    status: 'unseen'
+  }).sort({ requestTime: -1 })
+
+  unseenRequests = await Promise.all(
+    unseenRequests.map(async (request) => {
+      const sender = await User.findOne({
+        username: request.sender
+      })
+
+      return {
+        sender: sender.username,
+        senderAvatarURL: sender.avatarURL
+      }
+    })
+  )
+
+  res.send({unseenRequests});
+})
 
 module.exports = route;
