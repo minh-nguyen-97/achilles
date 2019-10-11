@@ -1,0 +1,42 @@
+<% var count = 0 %>
+<% while (count < suggestions.length) { %>
+  <div class="carousel-item <% if (count == 0) { %>
+    <%= 'active' %>
+  <% } %>">
+    <% var numOfItem = 0 %>
+    <div>
+      <% while (count < suggestions.length) { %>
+        
+          <div class="card d-inline-block" style="width: 26%; margin-left: 5%;">
+            <img class="card-img-top" src="<%= suggestions[count].avatarURL %>" height="150px">
+            <div class="card-body" style="padding-left: 10px;">
+                <div style="font-style: italic; font-size: 14px">
+                  <strong class="brandColor"><%= suggestions[count].username %></strong>
+                </div>
+                <button id="addFriendButtonFor<%= suggestions[count].username %>" class="btn btn-outline-primary addFriendButton requestStatusButton"  style=" display: block"> 
+                  <i class="fas fa-user-plus"></i> 
+                  <span>Add Friend</span>
+                </button>
+                <button id="requestSentButtonFor<%= suggestions[count].username %>" class="btn btn-outline-primary requestSentButton requestStatusButton" style=" display: none; width: 110%">
+                  <i class="fas fa-user-clock"></i> 
+                  <span>Request Sent</span>
+                </button>
+                <div id="receivedRequestFrom<%= suggestions[count].username %>" style="display:none; width: 120%; margin-top: 7px;">
+                  <button onclick="acceptRequestFrom('<%= suggestions[count].username %>')" class="btn btn-success requestStatusButton" style="width: 45%; margin-top: 0;">Accept</button>
+                  <button onclick="ignoreRequestFrom('<%= suggestions[count].username %>')" class="btn btn-outline-danger requestStatusButton" style=" width: 45%; margin-top: 0;">Ignore</button>
+                </div>
+                <button id="friendsWith<%= suggestions[count].username %>" class="btn btn-outline-primary friendshipButton requestStatusButton" style="display: none;">
+                  <i class="fas fa-user-check"></i>
+                  <span>Friend</span>
+                </button>
+            </div>
+          </div>
+        <% count++ %>
+        <% numOfItem++ %>
+        <% if (numOfItem == 3) break; %>
+      <% } %>
+    </div>
+  </div>
+<% } %>
+
+

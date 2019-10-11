@@ -1,7 +1,9 @@
 require('dotenv').config();
 const path = require('path')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const session = require('express-session')
+const MongoStore = require('connect-mongo')(session);
 const favicon = require('serve-favicon')
 const mongoose = require('mongoose')
 const flash = require('connect-flash')
@@ -9,6 +11,9 @@ const passport = require('passport')
 const { isAuthenticated } = require('./auth/auth-guard')
 const express = require('express')
 const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+const passportSocketIo = require("passport.socketio");
 const port = process.env.PORT || 3000;
 
 const userRouter = require('./routes/user')
@@ -42,13 +47,18 @@ app.use(bodyParser.urlencoded({
 }));
 
 // session
+const sessionStore = new MongoStore({
+  mongooseConnection: mongoose.connection
+})
+
 app.use(session({
   secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: true,
+  resave: true,
+  saveUninitialized: false,
   cookie: {
-    maxAge: 24 * 60 * 60 * 1000,
-  }
+    maxAge: 24 * 60 * 60 * 1000
+  },
+  store: sessionStore
 }))
 
 // Passport
@@ -72,6 +82,45 @@ app.use('/user', userRouter)
 
 app.use('/account', isAuthenticated, accountRouter)
 
-app.listen(port, () => {
+io.use(passportSocketIo.authorize({
+  secret: process.env.SESSION_SECRET,
+  store: sessionStore
+}))
+
+io.on('connection', (socket) => {
+  const username = socket.request.user.username;
+  console.log('user ' + username + ' connected');
+
+  socket.join(`${username}`)
+
+  socket.on('disconnect', function() {
+    socket.leave(`${username}`)
+  })
+
+  socket.on('send friend request', (receiver) => {
+    io.to(receiver).emit('received friend request', username, socket.request.user.avatarURL);
+  })
+
+  socket.on('delete friend request', (receiver) => {
+    io.to(receiver).emit('received deletion friend request', username);
+  })
+
+  socket.on('ignore friend request', (receiver) => {
+    io.to(receiver).emit('received ignore friend request', username);
+  })
+
+  socket.on('accept friend request', (receiver) => {
+    io.to(receiver).emit('received accept friend request', username, socket.request.user.avatarURL);
+  })
+
+  socket.on('unfriend', (receiver) => {
+    io.to(receiver).emit('received unfriend', username);
+  })
+
+  // console.log(io.sockets.adapter.rooms)
+  
+})
+
+server.listen(port, () => {
   console.log(`Server running on ${port}`)
 })

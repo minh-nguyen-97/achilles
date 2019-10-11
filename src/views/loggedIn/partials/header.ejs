@@ -10,18 +10,215 @@
 <script src="https://kit.fontawesome.com/81416c8099.js" crossorigin="anonymous"></script>
 
 <!-- Bootstrap CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <link rel="stylesheet" href="/assets/css/primary-button.css">
 <link rel="stylesheet" href="/assets/css/font-families.css">
 <link rel="stylesheet" href="/assets/css/navbar.css">
 
 <!-- Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-<!-- Ajax jquery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
 <!-- Axios -->
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<!-- Scripts -->
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
+  socket.on('received deletion friend request', function(sender) {
+    $(`#friendRequestFrom${sender}`).remove();
+    if ($(`#receivedRequestFrom${sender}`).length) {
+      $(`#receivedRequestFrom${sender}`).css('display', 'none')
+      $(`#addFriendButtonFor${sender}`).css('display', 'block')
+    }
+    
+  })
+  socket.on('received friend request', function(sender, senderAvatarURL) {
+    // alert(`${sender} sent you a friend request`)
+    const numOfNoti = Number($('#friendsNotiBadge').text())
+    $('#friendsNotiBadge').text(numOfNoti + 1)
+    $('#friendsNotiBadge').show();
+    $('#friendsRequestNotiMenu').prepend(
+      `
+      <div id="friendRequestFrom${sender}" class="container-fluid" style="background-color: whitesmoke; padding-top:9px">
+        <div class="row align-items-center">
+          <div class="col text-left">
+            <img src="${senderAvatarURL}" style="border-radius: 50%" width="40" height="40"> 
+            <span style="font-size: 14px">
+              <strong class="brandColor">${sender}</strong>
+            </span>
+          </div>
+          <div class="col text-right" style=" vertical-align: middle">
+            <button onclick="acceptRequestFrom('${sender}')" class="btn btn-success" style="font-size: 12px; height: 0.75cm;">Accept</button>
+            <button onclick="ignoreRequestFrom('${sender}')" class="btn btn-outline-danger" style="font-size: 12px; height: 0.75cm;">Ignore</button>
+          </div>
+        </div>
+        <div class="dropdown-divider"></div>
+      </div>
+      `
+    )
+
+    const time = Date.now();
+    $('#toastsNoti').append(
+
+      `<div id="${time}" class="toast ml-auto" role="alert" data-delay="3000" data-autohide="true">
+          <div class="toast-header">
+              <strong class="mr-auto text-primary">Friend Request</strong>
+              <small class="text-muted">just now</small>
+              <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+              </button>
+          </div>
+          <div class="toast-body">
+              <img src="${senderAvatarURL}" style="border-radius: 50%" width="30" height="30"> 
+              <span style="font-size: 14px">
+                <strong class="brandColor">${sender}</strong>
+                sent you a friend request
+              </span>
+          </div>
+      </div>
+      `
+    )
+    $(`#${time}`).toast('show')
+
+    if ($(`#receivedRequestFrom${sender}`).length) {
+      $(`#receivedRequestFrom${sender}`).css('display', 'block')
+      $(`#addFriendButtonFor${sender}`).css('display', 'none')
+    }
+
+  })
+
+  socket.on('received ignore friend request', function(sender) {
+    if ($(`#requestSentButtonFor${sender}`).length) {
+      $(`#requestSentButtonFor${sender}`).css('display', 'none');
+      $(`#addFriendButtonFor${sender}`).css('display', 'block');
+    }
+  })
+
+  socket.on('received accept friend request', function(sender, senderAvatarURL) {
+    if ($(`#requestSentButtonFor${sender}`).length) {
+      $(`#requestSentButtonFor${sender}`).css('display', 'none');
+      $(`#friendsWith${sender}`).css('display', 'block');
+
+      const time = Date.now();
+      $('#toastsNoti').append(
+
+        `<div id="${time}" class="toast ml-auto" role="alert" data-delay="3000" data-autohide="true">
+            <div class="toast-header">
+                <strong class="mr-auto text-primary">Friendship</strong>
+                <small class="text-muted">just now</small>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                <img src="${senderAvatarURL}" style="border-radius: 50%" width="30" height="30"> 
+                <span style="font-size: 14px">
+                  <strong class="brandColor">${sender}</strong>
+                  and you are now friends on Achilles
+                </span>
+            </div>
+        </div>
+        `
+      )
+      $(`#${time}`).toast('show')
+    }
+  });
+
+  socket.on('received unfriend', function(sender) {
+    if ($(`#friendsWith${sender}`).length) {
+      $(`#friendsWith${sender}`).css('display', 'none');
+      $(`#addFriendButtonFor${sender}`).css('display', 'block')
+    }
+  })
+</script>
+
+<script type="text/javascript">
+
+  function acceptRequestFrom(sender) {
+    axios.post(`/account/accept-friend-request`, {
+      sender
+    }).then(() => {
+      $(`#friendRequestFrom${sender}`).remove();
+      if ($(`#friendsWith${sender}`).length) {
+        $(`#receivedRequestFrom${sender}`).css('display', 'none')
+        $(`#friendsWith${sender}`).css('display', 'block');
+      }
+      socket.emit('accept friend request', sender)
+    });
+  }
+
+  function ignoreRequestFrom(sender) {
+    axios.delete(`/account/ignore-friend-request/${sender}`).then(() => {
+      $(`#friendRequestFrom${sender}`).remove();
+      if ($(`#receivedRequestFrom${sender}`).length) {
+        $(`#receivedRequestFrom${sender}`).css('display', 'none')
+        $(`#addFriendButtonFor${sender}`).css('display', 'block')
+      }
+      socket.emit('ignore friend request', sender);
+    });
+  }
+
+  $(document).ready(function() {
+
+    axios.get('/account/number-unseen-friend-request').then((res) => {
+      const numOfUnseenRequests = res.data.numOfUnseenRequests;
+      // console.log(numOfUnseenRequests);
+      if (numOfUnseenRequests > 0) {
+        $('#friendsNotiBadge').text(numOfUnseenRequests);
+        $('#friendsNotiBadge').show();
+      }
+    })
+
+    function loadRequests(requests, statusOfRequests) {
+      requests.forEach((request) => {
+        $('#friendsRequestNotiMenu').append(
+            `
+            <div id="friendRequestFrom${request.sender}" class="container-fluid ${statusOfRequests}">
+              <div class="row align-items-center">
+                <div class="col text-left">
+                  <img src="${request.senderAvatarURL}" style="border-radius: 50%" width="40" height="40"> 
+                  <span style="font-size: 14px">
+                    <strong class="brandColor">${request.sender}</strong>
+                  </span>
+                </div>
+                <div class="col text-right" style=" vertical-align: middle">
+                  <button onclick="acceptRequestFrom('${request.sender}')" class="btn btn-success" style="font-size: 12px; height: 0.75cm;">Accept</button>
+                  <button onclick="ignoreRequestFrom('${request.sender}')" class="btn btn-outline-danger" style="font-size: 12px; height: 0.75cm;">Ignore</button>
+                </div>
+              </div>
+              <div class="dropdown-divider"></div>
+            </div>
+            `
+          )
+      })
+    }
+
+    axios.get('/account/unseen-friend-request').then((res1) => {
+      const unseenRequests = res1.data.unseenRequests;
+      // console.log(unseenRequests);
+      loadRequests(unseenRequests, 'unseenRequests')
+    }).then(() => {
+
+      axios.get('/account/seen-friend-request').then((res2) => {
+        const seenRequests = res2.data.seenRequests;
+        console.log(seenRequests);
+        loadRequests(seenRequests, 'seenRequests')
+      })
+    })
+
+    $('#friendsDropdownMenu').click(function(e){
+      e.stopPropagation();
+    })
+
+    $('#friendsDropdown').click(function(e) {
+      $('#friendsNotiBadge').hide();
+      $('#friendsNotiBadge').text(0);
+      axios.patch('/account/update-unseen-friend-request');
+    })
+    
+  })
+</script>

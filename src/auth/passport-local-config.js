@@ -8,18 +8,33 @@ module.exports = (passport) => {
       passReqToCallback: true
     }, async (req, email, password, done) => {
 
-      User.findOne({ email }, async (err, user) => {
-        if (err) { return done(err); }
-        if (!user) {
-          return done(null, false, req.flash('error_flash', 'Invalid username or password'));
+      try {
+        let user = await User.findOne({ username: email });
+        if (user) {
+            const isMatch = await user.verifyPassword(password);
+            if (!isMatch) {
+              return done(null, false, req.flash('error_flash', 'Invalid credentials'));
+            }
+            return done(null, user, req.flash('success_flash', `Welcome to Achilles, ${user.username}`));
         }
+        else {
+          let user = await User.findOne({ email })
 
-        const isMatch = await user.verifyPassword(password);
-        if (!isMatch) {
-          return done(null, false, req.flash('error_flash', 'Invalid username or password'));
+          if (!user) {
+            return done(null, false, req.flash('error_flash', 'Invalid username/email'));
+          }
+
+          const isMatch = await user.verifyPassword(password);
+          if (!isMatch) {
+            return done(null, false, req.flash('error_flash', 'Invalid credentials'));
+          }
+
+          return done(null, user, req.flash('success_flash', `Welcome to Achilles, ${user.username}`));
         }
-        return done(null, user, req.flash('success_flash', `Welcome to Achilles, ${user.username}`));
-      });
+      }
+      catch (e) {
+        console.log(e);
+      }
 
     })
   );

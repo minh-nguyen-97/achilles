@@ -3,6 +3,8 @@ const aws = require('aws-sdk')
 const multer = require('multer')
 const multerS3 = require('multer-s3')
 const User = require('../../models/user')
+const Request = require('../../models/friend-request')
+const Friend = require('../../models/friend')
 const express = require('express')
 const route = express.Router();
 
@@ -55,5 +57,151 @@ route.get('/profile', (req, res) => {
   })
 })
 
+route.post('/send-friend-request', async (req, res) => {
+  const receiver = req.body.receiver;
+  const request = new Request({
+    sender: req.user.username,
+    receiver,
+    status: 'unseen',
+  })
+  
+  await request.save();
+
+  res.send('Successfully request')
+})
+
+
+route.delete('/delete-friend-request/:receiver', async (req, res) => {
+  const receiver = req.params.receiver;
+  // console.log(req.user.username, receiver)
+  const request = await Request.findOne({
+    sender: req.user.username,
+    receiver
+  });
+
+  await request.remove();
+
+  res.send('Successfully delete request')
+})
+
+route.delete('/ignore-friend-request/:sender', async (req, res) => {
+  const sender = req.params.sender;
+
+  const request = await Request.findOne({
+    sender,
+    receiver: req.user.username
+  });
+
+  await request.remove();
+
+  res.send('Successfully ignore request')
+})
+
+route.post('/accept-friend-request', async (req, res) => {
+  const sender = req.body.sender;
+  const receiver = req.user.username;
+
+  const request = await Request.findOne({
+    sender,
+    receiver
+  });
+
+  await request.remove();
+
+  // create two-way friendship
+  const friend1 = new Friend({
+    username: sender,
+    friend: receiver
+  })
+
+  await friend1.save();
+
+  const friend2 = new Friend({
+    username: receiver,
+    friend: sender
+  })
+
+  await friend2.save();
+
+  res.send('Successfully accept request')
+})
+
+route.delete('/unfriend/:receiver', async (req, res) => {
+  receiver = req.params.receiver;
+  sender = req.user.username;
+
+  const friend1 = await Friend.findOne({
+    username: sender,
+    friend: receiver
+  })
+
+  await friend1.remove();
+
+  const friend2 = await Friend.findOne({
+    username: receiver,
+    friend: sender
+  })
+
+  await friend2.remove();
+
+  res.send('Unfriend successfully')
+})
+
+// get number of unseen friend request
+route.get('/number-unseen-friend-request', async(req, res) => {
+  // console.log(req.user.username);
+  const numOfUnseenRequests = await Request.countDocuments({ 
+    receiver: req.user.username,
+    status: 'unseen'
+  })
+
+  res.send({numOfUnseenRequests});
+})
+
+const loadRequests = async (receiver, statusOfRequests) => {
+  let requests = await Request.find({
+    receiver,
+    status: statusOfRequests
+  }).sort({ requestTime: -1 })
+
+  requests = await Promise.all(
+    requests.map(async (request) => {
+      const sender = await User.findOne({
+        username: request.sender
+      })
+
+      return {
+        sender: sender.username,
+        senderAvatarURL: sender.avatarURL
+      }
+    })
+  )
+
+  return requests;
+}
+
+route.get('/unseen-friend-request', async(req, res) => {
+  
+  const unseenRequests = await loadRequests(req.user.username, 'unseen')
+
+  res.send({unseenRequests});
+})
+
+route.get('/seen-friend-request', async (req, res) => {
+  const seenRequests = await loadRequests(req.user.username, 'seen');
+
+  res.send({ seenRequests })
+})
+
+route.patch('/update-unseen-friend-request', async (req, res) => {
+  await Request.updateMany({
+    receiver: req.user.username,
+    status: 'unseen'
+  }, {
+    $set: { status: 'seen' }
+  })
+
+  res.send('Update unseen requests successfully')
+})
 
 module.exports = route;
