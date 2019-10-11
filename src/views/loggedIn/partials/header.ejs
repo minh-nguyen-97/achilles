@@ -162,14 +162,6 @@
     });
   }
 
-  // function removeNotiForUnseenRequests() {
-  //     alert('CHANGE')
-  //     if ($(this).hasClass('show')) {
-  //       $('#friendsNotiBadge').hide();
-  //       $('#friendsNotiBadge').text(0)
-  //     }
-  //   }
-
   $(document).ready(function() {
 
     axios.get('/account/number-unseen-friend-request').then((res) => {
@@ -181,13 +173,11 @@
       }
     })
 
-    axios.get('/account/unseen-friend-request').then((res) => {
-      const unseenRequests = res.data.unseenRequests;
-      console.log(unseenRequests);
-      unseenRequests.forEach((request) => {
+    function loadRequests(requests, statusOfRequests) {
+      requests.forEach((request) => {
         $('#friendsRequestNotiMenu').append(
             `
-            <div id="friendRequestFrom${request.sender}" class="container-fluid" style="background-color: whitesmoke; padding-top:9px">
+            <div id="friendRequestFrom${request.sender}" class="container-fluid ${statusOfRequests}">
               <div class="row align-items-center">
                 <div class="col text-left">
                   <img src="${request.senderAvatarURL}" style="border-radius: 50%" width="40" height="40"> 
@@ -205,10 +195,29 @@
             `
           )
       })
+    }
+
+    axios.get('/account/unseen-friend-request').then((res1) => {
+      const unseenRequests = res1.data.unseenRequests;
+      // console.log(unseenRequests);
+      loadRequests(unseenRequests, 'unseenRequests')
+    }).then(() => {
+
+      axios.get('/account/seen-friend-request').then((res2) => {
+        const seenRequests = res2.data.seenRequests;
+        console.log(seenRequests);
+        loadRequests(seenRequests, 'seenRequests')
+      })
     })
 
     $('#friendsDropdownMenu').click(function(e){
       e.stopPropagation();
+    })
+
+    $('#friendsDropdown').click(function(e) {
+      $('#friendsNotiBadge').hide();
+      $('#friendsNotiBadge').text(0);
+      axios.patch('/account/update-unseen-friend-request');
     })
     
   })

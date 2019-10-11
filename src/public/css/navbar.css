@@ -39,3 +39,12 @@
   -webkit-user-select: none;
   width: 24px;
 }
+
+.unseenRequests{
+  background-color: whitesmoke;
+  padding-top:9px
+}
+
+.seenRequests {
+  padding-top:9px
+}

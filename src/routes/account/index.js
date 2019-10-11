@@ -158,14 +158,14 @@ route.get('/number-unseen-friend-request', async(req, res) => {
   res.send({numOfUnseenRequests});
 })
 
-route.get('/unseen-friend-request', async(req, res) => {
-  let unseenRequests = await Request.find({
-    receiver: req.user.username,
-    status: 'unseen'
+const loadRequests = async (receiver, statusOfRequests) => {
+  let requests = await Request.find({
+    receiver,
+    status: statusOfRequests
   }).sort({ requestTime: -1 })
 
-  unseenRequests = await Promise.all(
-    unseenRequests.map(async (request) => {
+  requests = await Promise.all(
+    requests.map(async (request) => {
       const sender = await User.findOne({
         username: request.sender
       })
@@ -177,7 +177,31 @@ route.get('/unseen-friend-request', async(req, res) => {
     })
   )
 
+  return requests;
+}
+
+route.get('/unseen-friend-request', async(req, res) => {
+  
+  const unseenRequests = await loadRequests(req.user.username, 'unseen')
+
   res.send({unseenRequests});
+})
+
+route.get('/seen-friend-request', async (req, res) => {
+  const seenRequests = await loadRequests(req.user.username, 'seen');
+
+  res.send({ seenRequests })
+})
+
+route.patch('/update-unseen-friend-request', async (req, res) => {
+  await Request.updateMany({
+    receiver: req.user.username,
+    status: 'unseen'
+  }, {
+    $set: { status: 'seen' }
+  })
+
+  res.send('Update unseen requests successfully')
 })
 
 module.exports = route;
