@@ -8,3 +8,15 @@
   margin-top: 5px; 
   height: 1cm;
 }
+
+.friendsChat {
+  margin-bottom: 10px; 
+  cursor: pointer;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+}
+
+.friendsChat:hover {
+  background-color: rgb(211, 239, 240);
+}

@@ -13,7 +13,7 @@
     </div>
 
     <div class="container-compatible">
-      <div class="card" style="width: 60%">
+      <div class="card" style="width: 63%">
         <h6 class="card-header">
           People you may know
         </h6>
@@ -33,6 +33,34 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div style="position: fixed; top: 10%; right: 15%; bottom: 0%; width: 20%">
+      <div class="card h-100">
+        <h6 class="card-header">Friends</h6>
+        <div class="card-body overflow-auto">
+
+          <!-- <div class="row align-items-center friendsChat">
+            <div class="col text-left">
+              <img src="<%= avatarURL %>" style="border-radius: 50%" width="40" height="40"> 
+              <div style="display: inline-block; height: 100%;">
+                <span style="font-size: 14px">
+                  <strong class="brandColor"><%= username %></strong>
+                </span>
+              </div>
+            </div>
+            <div class="col text-right" style=" vertical-align: middle">
+                <i class="fab fa-facebook-messenger" style="font-size: 18px;"></i>
+            </div>
+          </div> -->
+
+          <%- include('./partials/dashboard-friend.ejs') %>
+        
+        </div>
+      </div>
+    </div>
+    <div style="width: 1px;">
+      a a a a a a a a a a a a a a a a a a a a a a a a 
     </div>
 
     <%- include('./partials/toasts.ejs') %>

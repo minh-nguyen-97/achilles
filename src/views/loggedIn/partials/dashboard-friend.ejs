@@ -1,0 +1,13 @@
+<% for (var i = 0; i < friends.length; i++) { %>
+  <div class="row align-items-center friendsChat">
+    <div class="col text-left">
+      <img src="<%= friends[i].avatarURL %>" style="border-radius: 50%" width="36" height="36"> 
+      <span style="font-size: 14px">
+        <strong class="brandColor"><%= friends[i].username %></strong>
+      </span>
+    </div>
+    <div class="col text-right" style=" vertical-align: middle">
+        <i class="fab fa-facebook-messenger" style="font-size: 18px;"></i>
+    </div>
+  </div>
+<% } %> 

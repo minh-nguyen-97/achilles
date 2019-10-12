@@ -11,8 +11,17 @@ route.get('/', isNotAuthenticated, (req, res) => {
 
 route.get('/dashboard', isAuthenticated, async (req, res) => {
   let friends = await Friend.find({ username: req.user.username })
+  // for suggestions
   friends = friends.map( friend => friend.friend)
-  // console.log(friends)
+
+  let renderFriends = await User.find({ username : {$in: [...friends]} });
+  renderFriends = renderFriends.map( friend => {
+    return {
+      username: friend.username,
+      avatarURL: friend.avatarURL
+    }
+  })
+  // console.log(renderFriends)
 
   let sentRequests = await Request.find({ sender: req.user.username })
   sentRequests = sentRequests.map( request => request.receiver)
@@ -25,7 +34,7 @@ route.get('/dashboard', isAuthenticated, async (req, res) => {
   const notSuggestions = [...friends, ...sentRequests, ...receivedRequests, req.user.username]
   // console.log(notSuggestions)
 
-  let suggestions = await User.find({ username: {$nin: notSuggestions}});
+  let suggestions = await User.find({ username: {$nin: notSuggestions}}).limit(30);
   suggestions = suggestions.map( suggestion => {
     return {
       username: suggestion.username,
@@ -39,7 +48,8 @@ route.get('/dashboard', isAuthenticated, async (req, res) => {
   res.render('loggedIn/dashboard', {
     username: req.user.username,
     avatarURL: req.user.avatarURL,
-    suggestions
+    suggestions,
+    friends: renderFriends
   })
 })
 
