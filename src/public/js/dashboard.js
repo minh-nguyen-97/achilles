@@ -58,4 +58,10 @@ $(document).ready(function() {
       socket.emit('unfriend', receiver);
     })
   })
+
+  // chat
+  $('.chatTrigger').click(function() {
+    const receiver = $(this).attr('id').replace('chatTriggerFor', '');
+    alert(receiver);
+  })
 })

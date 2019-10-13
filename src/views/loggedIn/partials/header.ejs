@@ -205,7 +205,7 @@
 
       axios.get('/account/seen-friend-request').then((res2) => {
         const seenRequests = res2.data.seenRequests;
-        console.log(seenRequests);
+        // console.log(seenRequests);
         loadRequests(seenRequests, 'seenRequests')
       })
     })
@@ -218,6 +218,14 @@
       $('#friendsNotiBadge').hide();
       $('#friendsNotiBadge').text(0);
       axios.patch('/account/update-unseen-friend-request');
+    })
+
+    $('#friendsChatToggle .card-header').click(function() {
+      $('#friendsChatToggle').hide();
+    })
+
+    $('#friendsChatHeaderToggle .card-header').click(function() {
+      $('#friendsChatToggle').show();
     })
     
   })

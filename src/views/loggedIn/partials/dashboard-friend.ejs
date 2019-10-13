@@ -1,13 +1,44 @@
-<% for (var i = 0; i < friends.length; i++) { %>
-  <div class="row align-items-center friendsChat">
-    <div class="col text-left">
-      <img src="<%= friends[i].avatarURL %>" style="border-radius: 50%" width="36" height="36"> 
-      <span style="font-size: 14px">
-        <strong class="brandColor"><%= friends[i].username %></strong>
-      </span>
-    </div>
-    <div class="col text-right" style=" vertical-align: middle">
-        <i class="fab fa-facebook-messenger" style="font-size: 18px;"></i>
+<div id="friendsChatHeaderToggle" style="position: fixed; right: 15%; bottom: 0%; width: 20%">
+  <div class="card">
+    <h6 class="card-header" style="cursor: pointer;">Friends</h6>
+  </div>
+</div>
+
+<div id="friendsChatToggle" style="position: fixed; top: 10%; right: 15%; bottom: 0%; width: 20%">
+  <div class="card h-100">
+    <h6 class="card-header" style="cursor: pointer;">Friends</h6>
+    <div class="card-body overflow-auto">
+
+      <!-- <div class="row align-items-center friendsChat">
+        <div class="col text-left">
+          <img src="<%= avatarURL %>" style="border-radius: 50%" width="40" height="40"> 
+          <div style="display: inline-block; height: 100%;">
+            <span style="font-size: 14px">
+              <strong class="brandColor"><%= username %></strong>
+            </span>
+          </div>
+        </div>
+        <div class="col text-right" style=" vertical-align: middle">
+            <i class="fab fa-facebook-messenger" style="font-size: 18px;"></i>
+        </div>
+      </div> -->
+      
+      <% for (var i = 0; i < friends.length; i++) { %>
+        <div class="row align-items-center friendsChat">
+          <div class="col text-left">
+            <img src="<%= friends[i].avatarURL %>" style="border-radius: 50%" width="36" height="36"> 
+            <span style="font-size: 14px">
+              <strong class="brandColor"><%= friends[i].username %></strong>
+            </span>
+          </div>
+          <div class="col text-right" style=" vertical-align: middle">
+              <i id="chatTriggerFor<%= friends[i].username %>" class="fab fa-facebook-messenger chatTrigger" style="font-size: 18px;"></i>
+          </div>
+        </div>
+      <% } %> 
+    
     </div>
   </div>
-<% } %> 
+</div>
+
+

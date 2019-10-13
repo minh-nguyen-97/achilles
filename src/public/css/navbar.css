@@ -48,3 +48,7 @@
 .seenRequests {
   padding-top:9px
 }
+
+.fa-facebook-messenger:hover {
+  color: #55CDD0;
+}

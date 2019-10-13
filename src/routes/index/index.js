@@ -10,7 +10,7 @@ route.get('/', isNotAuthenticated, (req, res) => {
 })
 
 route.get('/dashboard', isAuthenticated, async (req, res) => {
-  let friends = await Friend.find({ username: req.user.username })
+  let friends = await Friend.find({ username: req.user.username }).sort({ createdTime: -1 })
   // for suggestions
   friends = friends.map( friend => friend.friend)
 
