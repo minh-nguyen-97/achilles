@@ -52,3 +52,9 @@
 .fa-facebook-messenger:hover {
   color: #55CDD0;
 }
+
+textarea {
+  resize: none;
+  padding-left: 6px;
+  padding-right: 6px;
+}

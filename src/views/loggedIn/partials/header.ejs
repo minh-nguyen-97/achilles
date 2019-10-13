@@ -227,6 +227,45 @@
     $('#friendsChatHeaderToggle .card-header').click(function() {
       $('#friendsChatToggle').show();
     })
+
+    $('#chatBox1Toggle .card-header').click(function() {
+      $('#chatBox1Toggle').hide();
+    })
+
+    $('#chatBox1HeaderToggle .card-header').click(function() {
+      $('#chatBox1Toggle').show();
+    })
     
+    $('#chatBox1TextArea').on('change keyup paste', function() {
+      const val = $('#chatBox1TextArea').val();
+      const numOfRows = $('#chatBox1TextArea').val().split("\n").length;
+      if (numOfRows >= 2 && $('#chatBox1TextArea').hasClass('h-10p')) {
+        $('#chatBox1TextArea').css('height', '20%');
+        $('#chatBox1TextArea').removeClass('h-10p').addClass('h-20p');
+        $('#chatBox1InboxContainer').css('height', '80%')
+        return;
+      }
+
+      if (numOfRows < 2) {
+        if (val.length > 36 && $('#chatBox1TextArea').hasClass('h-10p')) {
+          $('#chatBox1TextArea').css('height', '20%');
+          $('#chatBox1TextArea').removeClass('h-10p').addClass('h-20p')
+          $('#chatBox1InboxContainer').css('height', '80%')
+        } 
+
+        if (val.length <= 36 && $('#chatBox1TextArea').hasClass('h-20p')) {
+          $('#chatBox1TextArea').css('height', '10%');
+          $('#chatBox1TextArea').removeClass('h-20p').addClass('h-10p')
+          $('#chatBox1InboxContainer').css('height', '90%')
+        }
+      }
+      
+    })
+
+    $('#chatBox1TextArea').on('keypress', function(e) {
+      if (e.which == 13 && !e.shiftKey) {
+        alert('You hit enter')
+      }
+    })
   })
 </script>
