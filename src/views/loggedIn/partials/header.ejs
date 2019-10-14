@@ -262,9 +262,28 @@
       
     })
 
+    function resetScrollTopToTheEnd() {
+      const scrollHeight = $(`#chatBox1Inboxes`)[0].scrollHeight;
+      $(`#chatBox1Inboxes`).scrollTop(scrollHeight)
+    }
+
+    resetScrollTopToTheEnd();
+
     $('#chatBox1TextArea').on('keypress', function(e) {
       if (e.which == 13 && !e.shiftKey) {
-        alert('You hit enter')
+        e.preventDefault();
+        const senderMessage = $('#chatBox1TextArea').val();
+        $('#chatBox1Inboxes').append(
+          `
+          <div class="d-flex flex-row-reverse">
+            <div class="text-right senderMessage" style="display: block">
+              ${senderMessage}
+            </div>
+          </div>
+          `
+        )
+        resetScrollTopToTheEnd();
+        $('#chatBox1TextArea').val('')
       }
     })
   })

@@ -42,10 +42,18 @@
 </div>
 
 
-<div id="chatBox1HeaderToggle" style="position: fixed; right: 36%; bottom: 0%; width: 20%">
+<div id="chatBox1HeaderToggle" style="position: fixed; right: 36%; bottom: 0%; width: 20%; cursor: pointer;">
   <div class="card">
     <div class="card-header">
-      <h6><%= username %></h6>
+      <div class="row">
+        <div class="col">
+          <h6><%= username %></h6>
+        </div>
+        <div class="col text-right">
+            <i class="fas fa-times"></i>
+        </div>
+      </div>
+      
     </div>
   </div>
 </div>
@@ -57,13 +65,33 @@
           top: 50%; 
           bottom: 0%; 
           width: 20%; 
-          ">
+          z-index: 1;
+          font-size: 14px;
+          "
+  >
   <div id="chatBox1InboxContainer" class="card" style="height: 90%;">
-    <div class="card-header">
-      <h6><%= username %></h6>
+    <div class="card-header" style="cursor: pointer;">
+      <div class="row">
+        <div class="col">
+          <h6><%= username %></h6>
+        </div>
+        <div class="col text-right">
+            <i class="fas fa-times"></i>
+        </div>
+      </div>
     </div>
-    <div class="overflow-auto">
-      test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>test <br>yo <br>
+    <div id="chatBox1Inboxes" class="overflow-auto" style="vertical-align: bottom;">
+      <div class="d-flex flex-row-reverse">
+        <div class="text-right senderMessage">
+          sender message
+        </div>
+      </div>
+
+      <div class="d-flex flex-row">
+        <div class="text-left receiverMessage">
+          receiver message
+        </div>
+      </div>
     </div>
   </div>
   <!-- <div style="height: 10%; position: absolute; bottom: 0%; width: 100%;">
@@ -89,23 +117,5 @@
           placeholder="Enter your message..."></textarea>
 </div>
 
-
-
-<!-- <div style="position: fixed; right: 57%; bottom: 0%; width: 20%">
-  <div class="card">
-    <div class="card-header">
-      <h6><%= username %></h6>
-    </div>
-  </div>
-</div> -->
-
-
-  <!-- <div style="position: fixed; right: 36%; bottom: 0%; width: 20%">
-      <div class="card">
-        <div class="card-header">
-          <h6><%= username %></h6>
-        </div>
-      </div>
-    </div> -->
 
 
