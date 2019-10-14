@@ -19,6 +19,7 @@ const port = process.env.PORT || 3000;
 const userRouter = require('./routes/user')
 const indexRouter = require('./routes/index')
 const accountRouter = require('./routes/account')
+const chatRouter = require('./routes/chat')
 
 // connect to database
 mongoose.connect(
@@ -81,6 +82,8 @@ app.use('/', indexRouter);
 app.use('/user', userRouter)
 
 app.use('/account', isAuthenticated, accountRouter)
+
+app.use('/chat', isAuthenticated, chatRouter);
 
 io.use(passportSocketIo.authorize({
   secret: process.env.SESSION_SECRET,

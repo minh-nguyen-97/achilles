@@ -262,6 +262,30 @@
       
     })
 
+    $(`#chatBox1Inboxes`).scroll(function() {
+      if ($(`#chatBox1Inboxes`).scrollTop() == 0) {
+        $('#chatBox1Spinner').removeClass('d-none').addClass('d-flex');
+        setTimeout( function() {
+          $('#chatBox1Spinner').removeClass('d-flex').addClass('d-none');
+          const currentMessageHeight = $('#chatBox1Spinner').next().height();
+
+          let totalAddedHeight = 0;
+          for (var i = 0; i < 10; i++) {
+            $('#chatBox1Spinner').after(
+              `
+              <div class="d-flex flex-row-reverse">
+                <div class="text-right senderMessage">
+                  test ${i}
+                </div>
+              </div>
+              `)
+            totalAddedHeight += $('#chatBox1Spinner').next().height();
+          }
+          $(`#chatBox1Inboxes`).scrollTop(totalAddedHeight - 3 * currentMessageHeight);
+        }, 3000)
+      }
+    })
+
     function resetScrollTopToTheEnd() {
       const scrollHeight = $(`#chatBox1Inboxes`)[0].scrollHeight;
       $(`#chatBox1Inboxes`).scrollTop(scrollHeight)
@@ -272,18 +296,26 @@
     $('#chatBox1TextArea').on('keypress', function(e) {
       if (e.which == 13 && !e.shiftKey) {
         e.preventDefault();
-        const senderMessage = $('#chatBox1TextArea').val();
-        $('#chatBox1Inboxes').append(
-          `
-          <div class="d-flex flex-row-reverse">
-            <div class="text-right senderMessage" style="display: block">
-              ${senderMessage}
+        const receiver = $('#chatBox1Receiver').text().trim();
+        const messageContent = $('#chatBox1TextArea').val();
+
+        axios.post('/chat/send-message', {
+          receiver,
+          messageContent
+        }).then(() => {
+          $('#chatBox1Inboxes').append(
+            `
+            <div class="d-flex flex-row-reverse">
+              <div class="text-right senderMessage">
+                ${messageContent}
+              </div>
             </div>
-          </div>
-          `
-        )
-        resetScrollTopToTheEnd();
-        $('#chatBox1TextArea').val('')
+            `
+          )
+          resetScrollTopToTheEnd();
+          $('#chatBox1TextArea').val('')
+        })
+        
       }
     })
   })

@@ -12,6 +12,9 @@ const messageSchema = new mongoose.Schema({
   messageContent: {
     type: String,
   },
+  status: {
+    type: String,
+  },
   sentTime: {
     type: Date,
     default: Date.now
