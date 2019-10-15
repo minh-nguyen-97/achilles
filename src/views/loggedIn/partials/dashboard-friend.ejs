@@ -41,8 +41,8 @@
   </div>
 </div>
 
-
-<div id="chatBox1HeaderToggle" style="position: fixed; right: 36%; bottom: 0%; width: 20%; cursor: pointer;">
+<!-- Chat Box -->
+<div id="chatBox1HeaderToggle" style="position: fixed; right: 36%; bottom: 0%; width: 20%; cursor: pointer; display: none">
   <div class="card">
     <div class="card-header">
       <div class="row">
@@ -50,7 +50,7 @@
           <h6><%= username %></h6>
         </div>
         <div class="col text-right">
-            <i class="fas fa-times"></i>
+          <i class="fas fa-minus"></i>
         </div>
       </div>
       
@@ -67,6 +67,7 @@
           width: 20%; 
           z-index: 1;
           font-size: 13.3px;
+          display: none;
           "
   >
   <div id="chatBox1InboxContainer" class="card" style="height: 90%;">
@@ -86,7 +87,7 @@
             <i class="fas fa-handshake brandColor" style="font-size: 30px;"></i>
         </div>
         <div style="width: 100%;">
-            You and <%= username %> are now friends
+            You and <%= username %> are friends on Achilles
         </div>
       </div>
 
@@ -96,7 +97,7 @@
         </div>
       </div>
 
-      <div class="d-flex flex-row-reverse">
+      <!-- <div class="d-flex flex-row-reverse">
         <div class="text-right senderMessage">
           sender message
         </div>
@@ -106,8 +107,7 @@
         <div class="text-left receiverMessage">
           receiver message
         </div>
-      </div>
-      test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>
+      </div> -->
     </div>
   </div>
 

@@ -121,6 +121,11 @@ io.on('connection', (socket) => {
   })
 
   // console.log(io.sockets.adapter.rooms)
+
+  //chat
+  socket.on('sent message', (receiver, messageContent) => {
+    io.to(receiver).emit('received message', username, messageContent);
+  })
   
 })
 

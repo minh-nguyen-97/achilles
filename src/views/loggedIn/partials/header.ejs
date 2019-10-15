@@ -220,6 +220,68 @@
       axios.patch('/account/update-unseen-friend-request');
     })
 
+    // Chat 
+
+    function resetScrollTopToTheEnd() {
+      const scrollHeight = $(`#chatBox1Inboxes`)[0].scrollHeight;
+      $(`#chatBox1Inboxes`).scrollTop(scrollHeight)
+    }
+
+    resetScrollTopToTheEnd();
+
+    function loadMessages(messages, receiver) {
+      
+      for (let i = 0; i < messages.length; i++) {
+        if (messages[i].sender == receiver) {
+          $('#chatBox1Spinner').after(
+            `
+            <div id="message_${messages[i].sentTime}" class="d-flex flex-row">
+              <div class="text-left receiverMessage">
+                ${messages[i].messageContent}
+              </div>
+            </div>
+            `
+          )
+        } else {
+          $('#chatBox1Spinner').after(
+            `
+            <div id="message_${messages[i].sentTime}" class="d-flex flex-row-reverse">
+              <div class="text-right senderMessage">
+                ${messages[i].messageContent}
+              </div>
+            </div>
+            `
+          )
+        }
+      }
+
+      if (messages.length < 10) {
+        $('#chatBox1FirstMessage').show();
+      }
+    }
+
+    $('.chatTrigger').click(function() {
+      const receiver = $(this).attr('id').replace('chatTriggerFor', '');
+      // alert(receiver);
+      $('#chatBox1HeaderToggle h6').text(receiver);
+      $('#chatBox1Receiver h6').text(receiver);
+      $('#chatBox1FirstMessage').hide();
+      $('#chatBox1FirstMessage').children().eq(1).text(`You and ${receiver} are friends on Achilles`)
+
+      $('#chatBox1Spinner').nextAll().remove()
+
+      axios.get(`/chat/get-initial-messages/${receiver}`).then((res) => {
+        const messages = res.data.messages;
+        loadMessages(messages, receiver);
+      }).then(() => {
+        $('#chatBox1Toggle').show();
+        $('#chatBox1HeaderToggle').show();
+        resetScrollTopToTheEnd();
+      })      
+      
+    });
+
+
     $('#friendsChatToggle .card-header').click(function() {
       $('#friendsChatToggle').hide();
     })
@@ -235,6 +297,11 @@
     $('#chatBox1HeaderToggle .card-header').click(function() {
       $('#chatBox1Toggle').show();
     })
+
+    $('#chatBox1Toggle .fa-times').click(function() {
+      $('#chatBox1Toggle').hide();
+      $('#chatBox1HeaderToggle').hide();
+    })
     
     $('#chatBox1TextArea').on('change keyup paste', function() {
       const val = $('#chatBox1TextArea').val();
@@ -243,6 +310,8 @@
         $('#chatBox1TextArea').css('height', '20%');
         $('#chatBox1TextArea').removeClass('h-10p').addClass('h-20p');
         $('#chatBox1InboxContainer').css('height', '80%')
+
+        resetScrollTopToTheEnd();
         return;
       }
 
@@ -259,39 +328,36 @@
           $('#chatBox1InboxContainer').css('height', '90%')
         }
       }
+
+      resetScrollTopToTheEnd();
       
     })
 
     $(`#chatBox1Inboxes`).scroll(function() {
-      if ($(`#chatBox1Inboxes`).scrollTop() == 0) {
-        $('#chatBox1Spinner').removeClass('d-none').addClass('d-flex');
-        setTimeout( function() {
-          $('#chatBox1Spinner').removeClass('d-flex').addClass('d-none');
-          const currentMessageHeight = $('#chatBox1Spinner').next().height();
+      if ($('#chatBox1FirstMessage').css('display') == 'none') {
+        if ($(`#chatBox1Inboxes`).scrollTop() == 0) {
+          $('#chatBox1Spinner').removeClass('d-none').addClass('d-flex');
+          setTimeout( function() {
+            $('#chatBox1Spinner').removeClass('d-flex').addClass('d-none');
+            const currentMessage = document.getElementById('chatBox1Spinner').nextElementSibling
+            const currentMessageHeight = currentMessage.offsetHeight
+            const afterTime = currentMessage.id.replace('message_', '')
+            const receiver = $('#chatBox1Receiver h6').text().trim();
 
-          let totalAddedHeight = 0;
-          for (var i = 0; i < 10; i++) {
-            $('#chatBox1Spinner').after(
-              `
-              <div class="d-flex flex-row-reverse">
-                <div class="text-right senderMessage">
-                  test ${i}
-                </div>
-              </div>
-              `)
-            totalAddedHeight += $('#chatBox1Spinner').next().height();
-          }
-          $(`#chatBox1Inboxes`).scrollTop(totalAddedHeight - 3 * currentMessageHeight);
-        }, 3000)
+            let totalAddedHeight = 0;
+
+            axios.get(`/chat/get-messages-after/${receiver}?afterTime=${afterTime}`).then((res) => {
+              const messages = res.data.messages;
+              loadMessages(messages, receiver);
+              totalAddedHeight += messages.length * currentMessageHeight;
+              $(`#chatBox1Inboxes`).scrollTop(totalAddedHeight);
+            })
+            
+          }, 3000)
+        }
       }
+      
     })
-
-    function resetScrollTopToTheEnd() {
-      const scrollHeight = $(`#chatBox1Inboxes`)[0].scrollHeight;
-      $(`#chatBox1Inboxes`).scrollTop(scrollHeight)
-    }
-
-    resetScrollTopToTheEnd();
 
     $('#chatBox1TextArea').on('keypress', function(e) {
       if (e.which == 13 && !e.shiftKey) {
@@ -299,10 +365,7 @@
         const receiver = $('#chatBox1Receiver').text().trim();
         const messageContent = $('#chatBox1TextArea').val();
 
-        axios.post('/chat/send-message', {
-          receiver,
-          messageContent
-        }).then(() => {
+        if (messageContent != '' && messageContent.trim() != '') {
           $('#chatBox1Inboxes').append(
             `
             <div class="d-flex flex-row-reverse">
@@ -314,9 +377,33 @@
           )
           resetScrollTopToTheEnd();
           $('#chatBox1TextArea').val('')
-        })
-        
+  
+          axios.post('/chat/send-message', {
+            receiver,
+            messageContent
+          }).then(() => {
+            socket.emit('sent message', receiver, messageContent);
+          })
+        }    
       }
     })
+
+    
+  socket.on('received message', function (senderFromSocket, messageContent) {
+    // alert('received message from ' + sender);
+    const receiverFromChatBox = $('#chatBox1Receiver').text().trim();
+    if (senderFromSocket == receiverFromChatBox) {
+      $('#chatBox1Inboxes').append(
+        `
+        <div class="d-flex flex-row">
+          <div class="text-left receiverMessage">
+            ${messageContent}
+          </div>
+        </div>
+        `
+      )
+      resetScrollTopToTheEnd();
+    }
   })
+})
 </script>

@@ -59,9 +59,4 @@ $(document).ready(function() {
     })
   })
 
-  // chat
-  $('.chatTrigger').click(function() {
-    const receiver = $(this).attr('id').replace('chatTriggerFor', '');
-    alert(receiver);
-  })
 })
