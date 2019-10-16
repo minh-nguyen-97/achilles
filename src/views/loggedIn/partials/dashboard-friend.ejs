@@ -26,7 +26,7 @@
       <% for (var i = 0; i < friends.length; i++) { %>
         <div class="row align-items-center friendsChat">
           <div class="col text-left">
-            <img src="<%= friends[i].avatarURL %>" style="border-radius: 50%" width="36" height="36"> 
+            <img id="avatarOf<%= friends[i].username %>" src="<%= friends[i].avatarURL %>" style="border-radius: 50%" width="36" height="36"> 
             <span style="font-size: 14px">
               <strong class="brandColor"><%= friends[i].username %></strong>
             </span>
@@ -46,10 +46,11 @@
   <div class="card">
     <div class="card-header">
       <div class="row">
-        <div class="col">
-          <h6><%= username %></h6>
+        <div class="col-8">
+          <img src="<%= avatarURL %>" width="30" height="30" style="border-radius: 50%"/>
+          <h6 style="display: inline-block;"><%= username %></h6>
         </div>
-        <div class="col text-right">
+        <div class="col-4 text-right">
           <i class="fas fa-minus"></i>
         </div>
       </div>
@@ -73,10 +74,11 @@
   <div id="chatBox1InboxContainer" class="card" style="height: 90%;">
     <div class="card-header" style="cursor: pointer;">
       <div class="row">
-        <div id="chatBox1Receiver" class="col">
-          <h6><%= username %></h6>
+        <div id="chatBox1Receiver" class="col-8">
+          <img src="<%= avatarURL %>" width="30" height="30" style="border-radius: 50%"/>
+          <h6 style="display: inline-block;"><%= username %></h6>
         </div>
-        <div class="col text-right">
+        <div class="col-4 text-right">
             <i class="fas fa-times"></i>
         </div>
       </div>
