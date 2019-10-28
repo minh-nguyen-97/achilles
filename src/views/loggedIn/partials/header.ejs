@@ -400,13 +400,14 @@
 
     function playSound() {
       let chatSound = document.getElementById('chatSound');
-      // console.log(chatSound);
-      chatSound.play().then(_ => {
-      }).catch( err => {
-      })
+      console.log(chatSound);
+      chatSound.play()
+      // .then(_ => {
+      // }).catch( err => {
+      // })
     }
 
-    // playSound();
+    playSound();
 
     function addMessageToast(sender, senderAvatarURL, messageContent) {
       const time = Date.now();
