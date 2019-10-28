@@ -5,6 +5,7 @@
     <%- include('./partials/header.ejs') %>
     <link rel="stylesheet/less" type="text/css" href="/assets/css/profile.less" >
     <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js" ></script> 
+    <link rel="stylesheet" href="/assets/css/profile.css">
     <script src="/assets/js/avatar.js"></script>
   </head>
   <body>
@@ -28,7 +29,14 @@
       </div>
     </div>
 
+    <%- include('./partials/dashboard-friend.ejs') %>
+
+    <%- include('./partials/toasts.ejs') %>
+
   </body>
   <script>
+    $(document).ready(function() {
+      $('#friendsChatToggle').hide();
+    })
   </script>
 </html>

@@ -49,11 +49,25 @@ route.post('/profile/upload', upload.single('avatar'), async function(req, res) 
   res.send({avatarURL: req.file.location})
 });
 
-route.get('/profile', (req, res) => {
+route.get('/profile', async (req, res) => {
+
+  let friends = await Friend.find({ username: req.user.username }).sort({ createdTime: -1 })
+  // for suggestions
+  friends = friends.map( friend => friend.friend)
+
+  let renderFriends = await User.find({ username : {$in: [...friends]} });
+  renderFriends = renderFriends.map( friend => {
+    return {
+      username: friend.username,
+      avatarURL: friend.avatarURL
+    }
+  })
+
   res.render('loggedIn/profile', {
     username: req.user.username,
     email: req.user.email,
-    avatarURL: req.user.avatarURL
+    avatarURL: req.user.avatarURL,
+    friends: renderFriends
   })
 })
 
