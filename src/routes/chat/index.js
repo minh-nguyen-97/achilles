@@ -11,7 +11,7 @@ route.post('/send-message', async (req, res) => {
     sender,
     receiver,
     messageContent,
-    status: 'unchecked'
+    status: 'unseen'
   })
 
   await message.save();
