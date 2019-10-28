@@ -67,10 +67,10 @@ router.post('/login', passport.authenticate('local', {
   })
 )
 
-router.get('/logout', isAuthenticated, (req, res) => {
-  req.logout();
-  req.flash('success_flash', 'You are logged out')
-  res.redirect('./login');
+router.get('/logout', isAuthenticated, async (req, res) => {
+  await req.logout();
+  await req.flash('success_flash', 'You are logged out')
+  res.redirect('/user/login');
 })
 
 module.exports = router;

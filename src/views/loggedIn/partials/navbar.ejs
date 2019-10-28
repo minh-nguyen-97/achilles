@@ -18,6 +18,35 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNavDropdown" style="margin-top: -5px;">
         <ul class="navbar-nav ml-auto">
+          <!-- <li class="nav-item">
+            <div id="chatTab" class="navTab" style="position: relative">
+              <a id="chatDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fab fa-facebook-messenger" style="font-size: 20px; padding-top: 6px;"></i>
+                <span id="chatNotiBadge" class="notiBadge" style="display: none"></span>
+              </a>
+              <div id="chatDropdownMenu" class="dropdown-menu dropdown-menu-right" style="width: 500px" aria-labelledby="chatDropdown">
+                <div class="container">
+                  <strong style="font-size: 14px">Messages</strong>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="container-fluid overflow-auto" id="chatMessagesNotiMenu" style="max-height: 80vh;">
+                  <div class="row align-items-center">
+                    <div class="col text-left">
+                      <img src="<%= avatarURL %>" style="border-radius: 50%" width="40" height="40"> 
+                      <span style="font-size: 14px">
+                        <strong class="brandColor"><%= username %></strong>
+                      </span>
+                    </div>
+                    <div class="col text-right" style=" vertical-align: middle">
+                      <button class="btn btn-success acceptRequestButton" style="font-size: 12px; height: 0.75cm;">Accept</button>
+                      <button class="btn btn-outline-danger ignoreRequestButton" style="font-size: 12px; height: 0.75cm;">Ignore</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li> -->
+
           <li class="nav-item">
             <div id="friendsTab" class="navTab" style="position: relative">
               <a id="friendsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -72,3 +101,12 @@
       
     </nav>
   </div>
+
+<!-- <audio id="chatSound" controls preload="auto" muted="false" style="display: none;">
+    <source src="/assets/chat-sound/slow-spring-board.mp3" type="audio/mpeg" />
+    Chat Sound
+</audio> -->
+
+<audio id="chatSound">
+  <source src="/assets/chat-sound/slow-spring-board.mp3" type="audio/mpeg" />
+</audio>

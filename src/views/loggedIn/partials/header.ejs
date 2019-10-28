@@ -205,7 +205,7 @@
 
       axios.get('/account/seen-friend-request').then((res2) => {
         const seenRequests = res2.data.seenRequests;
-        console.log(seenRequests);
+        // console.log(seenRequests);
         loadRequests(seenRequests, 'seenRequests')
       })
     })
@@ -219,6 +219,254 @@
       $('#friendsNotiBadge').text(0);
       axios.patch('/account/update-unseen-friend-request');
     })
+
+    // Chat 
+
+    function resetScrollTopToTheEnd() {
+      const scrollHeight = $(`#chatBox1Inboxes`)[0].scrollHeight;
+      $(`#chatBox1Inboxes`).scrollTop(scrollHeight)
+    }
+
+    resetScrollTopToTheEnd();
+
+    function loadMessages(messages, receiver) {
+      
+      for (let i = 0; i < messages.length; i++) {
+        if (messages[i].sender == receiver) {
+          $('#chatBox1Spinner').after(
+            `
+            <div id="message_${messages[i].sentTime}" class="d-flex flex-row">
+              <div class="text-left receiverMessage">
+                ${messages[i].messageContent}
+              </div>
+            </div>
+            `
+          )
+        } else {
+          $('#chatBox1Spinner').after(
+            `
+            <div id="message_${messages[i].sentTime}" class="d-flex flex-row-reverse">
+              <div class="text-right senderMessage">
+                ${messages[i].messageContent}
+              </div>
+            </div>
+            `
+          )
+        }
+      }
+
+      if (messages.length < 10) {
+        $('#chatBox1FirstMessage').show();
+      }
+    }
+
+    function openChatBox(receiver, receiverAvatarURL) {
+      $('#chatBox1HeaderToggle h6').text(receiver);
+      $('#chatBox1Receiver h6').text(receiver);
+
+      $('#chatBox1HeaderToggle img').attr('src', receiverAvatarURL);
+      $('#chatBox1Receiver img').attr('src', receiverAvatarURL);
+
+      $('#chatBox1FirstMessage').hide();
+      $('#chatBox1FirstMessage').children().eq(1).text(`You and ${receiver} are friends on Achilles`)
+
+      $('#chatBox1Spinner').nextAll().remove()
+
+      axios.get(`/chat/get-initial-messages/${receiver}`).then((res) => {
+        const messages = res.data.messages;
+        loadMessages(messages, receiver);
+      }).then(() => {
+        $('#chatBox1Toggle').show();
+        $('#chatBox1HeaderToggle').show();
+        resetScrollTopToTheEnd();
+      })      
+    }
+
+    $('.chatTrigger').click(function() {
+      const receiver = $(this).attr('id').replace('chatTriggerFor', '');
+      const receiverAvatarURL = $(`#avatarOf${receiver}`).attr('src');
+      // alert(receiverAvatarURL)
+      // alert(receiver);
+      
+      openChatBox(receiver, receiverAvatarURL);
+    });
+
+
+    $('#friendsChatToggle .card-header').click(function() {
+      $('#friendsChatToggle').hide();
+    })
+
+    $('#friendsChatHeaderToggle .card-header').click(function() {
+      $('#friendsChatToggle').show();
+    })
+
+    $('#chatBox1Toggle .card-header').click(function() {
+      $('#chatBox1Toggle').hide();
+    })
+
+    $('#chatBox1HeaderToggle .card-header').click(function() {
+      $('#chatBox1Toggle').show();
+    })
+
+    $('#chatBox1Toggle .fa-times').click(function() {
+      $('#chatBox1Toggle').hide();
+      $('#chatBox1HeaderToggle').hide();
+    })
     
+    $('#chatBox1TextArea').on('change keyup paste', function() {
+      const val = $('#chatBox1TextArea').val();
+      const numOfRows = $('#chatBox1TextArea').val().split("\n").length;
+      if (numOfRows >= 2 && $('#chatBox1TextArea').hasClass('h-10p')) {
+        $('#chatBox1TextArea').css('height', '20%');
+        $('#chatBox1TextArea').removeClass('h-10p').addClass('h-20p');
+        $('#chatBox1InboxContainer').css('height', '80%')
+
+        resetScrollTopToTheEnd();
+        return;
+      }
+
+      if (numOfRows < 2) {
+        if (val.length > 36 && $('#chatBox1TextArea').hasClass('h-10p')) {
+          $('#chatBox1TextArea').css('height', '20%');
+          $('#chatBox1TextArea').removeClass('h-10p').addClass('h-20p')
+          $('#chatBox1InboxContainer').css('height', '80%')
+        } 
+
+        if (val.length <= 36 && $('#chatBox1TextArea').hasClass('h-20p')) {
+          $('#chatBox1TextArea').css('height', '10%');
+          $('#chatBox1TextArea').removeClass('h-20p').addClass('h-10p')
+          $('#chatBox1InboxContainer').css('height', '90%')
+        }
+      }
+
+      resetScrollTopToTheEnd();
+      
+    })
+
+    $(`#chatBox1Inboxes`).scroll(function() {
+      if ($('#chatBox1FirstMessage').css('display') == 'none') {
+        if ($(`#chatBox1Inboxes`).scrollTop() == 0) {
+          $('#chatBox1Spinner').removeClass('d-none').addClass('d-flex');
+          setTimeout( function() {
+            $('#chatBox1Spinner').removeClass('d-flex').addClass('d-none');
+            const currentMessage = document.getElementById('chatBox1Spinner').nextElementSibling
+            const currentMessageHeight = currentMessage.offsetHeight
+            const afterTime = currentMessage.id.replace('message_', '')
+            const receiver = $('#chatBox1Receiver h6').text().trim();
+
+            let totalAddedHeight = 0;
+
+            axios.get(`/chat/get-messages-after/${receiver}?afterTime=${afterTime}`).then((res) => {
+              const messages = res.data.messages;
+              loadMessages(messages, receiver);
+              totalAddedHeight += messages.length * currentMessageHeight;
+              $(`#chatBox1Inboxes`).scrollTop(totalAddedHeight);
+            })
+            
+          }, 3000)
+        }
+      }
+      
+    })
+
+    $('#chatBox1TextArea').on('keypress', function(e) {
+      if (e.which == 13 && !e.shiftKey) {
+        e.preventDefault();
+        const receiver = $('#chatBox1Receiver').text().trim();
+        const messageContent = $('#chatBox1TextArea').val();
+
+        if (messageContent != '' && messageContent.trim() != '') {
+          $('#chatBox1Inboxes').append(
+            `
+            <div class="d-flex flex-row-reverse">
+              <div class="text-right senderMessage">
+                ${messageContent}
+              </div>
+            </div>
+            `
+          )
+          resetScrollTopToTheEnd();
+          $('#chatBox1TextArea').val('')
+  
+          axios.post('/chat/send-message', {
+            receiver,
+            messageContent
+          }).then(() => {
+            socket.emit('sent message', receiver, messageContent);
+          })
+        }    
+      }
+    })
+
+    function playSound() {
+      let chatSound = document.getElementById('chatSound');
+      console.log(chatSound);
+      chatSound.play()
+      // .then(_ => {
+      // }).catch( err => {
+      // })
+    }
+
+    // playSound();
+
+    function addMessageToast(sender, senderAvatarURL, messageContent) {
+      const time = Date.now();
+      $('#toastsNoti').append(
+
+        `<div id="${time}" class="toast ml-auto" role="alert" data-delay="3000" data-autohide="true">
+            <div class="toast-header">
+                <strong class="mr-auto text-primary">Message</strong>
+                <small class="text-muted">just now</small>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                <img src="${senderAvatarURL}" style="border-radius: 50%" width="30" height="30"> 
+                <span style="font-size: 14px">
+                  <strong class="brandColor">${sender}</strong>
+                  sent you a message: "${messageContent}"
+                </span>
+            </div>
+        </div>
+        `
+      )
+      $(`#${time}`).toast('show')
+    }
+    
+  socket.on('received message', function (senderFromSocket, messageContent) {
+    // alert('received message from ' + sender);
+    const senderFromSocketAvaURL = $(`#avatarOf${senderFromSocket}`).attr('src');
+
+    const receiverFromChatBox = $('#chatBox1Receiver').text().trim();
+
+    if (senderFromSocket == receiverFromChatBox
+    && $('#chatBox1HeaderToggle').is(':visible')
+    && $('#chatBox1Toggle').is(':visible')) {
+      $('#chatBox1Inboxes').append(
+        `
+        <div class="d-flex flex-row">
+          <div class="text-left receiverMessage">
+            ${messageContent}
+          </div>
+        </div>
+        `
+      )
+      resetScrollTopToTheEnd();
+    } else {
+      if ($('#chatBox1HeaderToggle').is(':hidden')
+      && $('#chatBox1Toggle').is(':hidden')) {
+        const receiver = senderFromSocket;
+        const receiverAvatarURL = senderFromSocketAvaURL;
+
+        openChatBox(receiver, receiverAvatarURL);
+        
+      }
+    }
+
+    playSound();
+    addMessageToast(senderFromSocket, senderFromSocketAvaURL, messageContent);
+
   })
+})
 </script>

@@ -48,3 +48,35 @@
 .seenRequests {
   padding-top:9px
 }
+
+.fa-facebook-messenger:hover {
+  color: #55CDD0;
+}
+
+textarea {
+  resize: none;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.senderMessage {
+  background-color: #55CDD0; 
+  color: white; 
+  border-radius: 5px; 
+  max-width: 60%; 
+  padding: 5px;
+  margin-top: 3px;
+  margin-bottom: 2px;
+  margin-right: 5px;
+}
+
+.receiverMessage {
+  background-color: whitesmoke; 
+  color: black; 
+  border-radius: 5px; 
+  max-width: 60%; 
+  padding: 5px;
+  margin-top: 3px;
+  margin-bottom: 2px;
+  margin-left: 5px;
+}

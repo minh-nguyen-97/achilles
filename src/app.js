@@ -19,6 +19,7 @@ const port = process.env.PORT || 3000;
 const userRouter = require('./routes/user')
 const indexRouter = require('./routes/index')
 const accountRouter = require('./routes/account')
+const chatRouter = require('./routes/chat')
 
 // connect to database
 mongoose.connect(
@@ -54,7 +55,7 @@ const sessionStore = new MongoStore({
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: true,
-  saveUninitialized: false,
+  saveUninitialized: true,
   cookie: {
     maxAge: 24 * 60 * 60 * 1000
   },
@@ -81,6 +82,8 @@ app.use('/', indexRouter);
 app.use('/user', userRouter)
 
 app.use('/account', isAuthenticated, accountRouter)
+
+app.use('/chat', isAuthenticated, chatRouter);
 
 io.use(passportSocketIo.authorize({
   secret: process.env.SESSION_SECRET,
@@ -118,6 +121,11 @@ io.on('connection', (socket) => {
   })
 
   // console.log(io.sockets.adapter.rooms)
+
+  //chat
+  socket.on('sent message', (receiver, messageContent) => {
+    io.to(receiver).emit('received message', username, messageContent);
+  })
   
 })
 
